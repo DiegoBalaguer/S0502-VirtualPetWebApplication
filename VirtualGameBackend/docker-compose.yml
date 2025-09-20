@@ -1,5 +1,5 @@
 services:
-  blackjack-app:
+  pet-app:
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,4 +9,4 @@ services:
       - "8080:8080"
     restart: unless-stopped
     env_file:
-      - _local/config_connections/conn_mysql_clever_mongo_atlas.env
+      - conn_mysql_clever.env
