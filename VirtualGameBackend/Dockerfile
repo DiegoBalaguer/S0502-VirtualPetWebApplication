@@ -8,7 +8,7 @@ COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
 # Copiar el resto de la aplicación
-COPY src ./src
+COPY VirtualGameBackend/src ./src
 
 # Construir el proyecto
 RUN mvn clean package -DskipTests
