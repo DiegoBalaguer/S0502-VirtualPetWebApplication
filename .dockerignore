@@ -1,0 +1,34 @@
+# Archivos de entorno y configuración
+_local/
+.env
+conn_externs.env
+*.env
+secrets/
+config/application-*.properties
+
+# Código fuente y desarrollo
+# src/
+.git/
+.gitignore
+.mvn/
+mvnw
+mvnw.cmd
+# pom.xml
+
+# Logs y temporales
+logs/
+target/
+*.log
+*.tmp
+
+# IDE y editor
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# Documentación
+README.md
+DOCS/

@@ -1,0 +1,12 @@
+services:
+  pet-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pet-app:latest
+    container_name: pet-app
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    env_file:
+      - conn_mysql_clever.env
