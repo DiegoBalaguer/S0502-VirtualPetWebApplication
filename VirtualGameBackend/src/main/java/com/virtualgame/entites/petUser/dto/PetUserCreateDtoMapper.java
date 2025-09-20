@@ -1,0 +1,18 @@
+package com.virtualgame.entites.petUser.dto;
+
+import com.virtualgame.entites.petUser.PetUser;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
+@Mapper(componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface PetUserCreateDtoMapper {
+
+    PetUserCreateDto toDto(PetUser petUser);
+
+    PetUser toEntity(PetUserCreateDto dto);
+
+        void updateEntityFromDto(PetUserCreateDto dto, @MappingTarget PetUser entity);
+
+    }

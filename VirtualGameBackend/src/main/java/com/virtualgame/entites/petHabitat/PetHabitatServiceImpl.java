@@ -1,0 +1,130 @@
+package com.virtualgame.entites.petHabitat;
+
+import com.virtualgame.config.properties.AppProperties;
+import com.virtualgame.entites.petHabitat.dto.*;
+import com.virtualgame.entites.petHabitat.mapper.PetHabitatCreateDtoMapper;
+import com.virtualgame.entites.petHabitat.mapper.PetHabitatFullDtoMapper;
+import com.virtualgame.entites.petHabitat.mapper.PetHabitatUpdateDtoMapper;
+import com.virtualgame.exception.exceptions.NotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class PetHabitatServiceImpl {
+
+    private final PetHabitatRepository petHabitatRepository;
+    private final PetHabitatCreateDtoMapper petHabitatCreateDtoMapper;
+    private final PetHabitatFullDtoMapper petHabitatFullDtoMapper;
+    private final PetHabitatUpdateDtoMapper petHabitatUpdateDtoMapper;
+    private static final String NAME_OBJECT = "pet habitat";
+    private final AppProperties appProperties;
+
+    @Transactional
+    public PetHabitatFullDto createPetHabitat(PetHabitatCreateDto createDto, Long userId) {
+        log.debug("Creating new {} with name: {}", NAME_OBJECT, createDto.name());
+
+        PetHabitat petHabitat = petHabitatCreateDtoMapper.toEntity(createDto);
+        if (petHabitat.getImageUrl() == null || petHabitat.getImageUrl().isEmpty()) {
+            petHabitat.setImageUrl(appProperties.getDefaultPetHabitatImageUrl());
+        }
+        if (petHabitat.getHappy() == null) petHabitat.setHappy(appProperties.getDefaultPetHappy());
+        if (petHabitat.getTired() == null) petHabitat.setTired(appProperties.getDefaultPetTired());
+        if (petHabitat.getHungry() == null) petHabitat.setHungry(appProperties.getDefaultPetHungry());
+        if (petHabitat.getMonths() == null) petHabitat.setMonths(appProperties.getDefaultPetMonths());
+        if (petHabitat.getAge() == null) petHabitat.setAge(appProperties.getDefaultPetAge());
+
+        petHabitat.setCreatedAt(LocalDateTime.now());
+        petHabitat.setUpdatedAt(LocalDateTime.now());
+        petHabitat.setUpdatedBy(userId);
+
+        PetHabitat savedEntity = savePetHabitat(petHabitat);
+        log.info("Created {} successfully with ID: {}", NAME_OBJECT, savedEntity.getId());
+
+        return petHabitatFullDtoMapper.toDto(savedEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public PetHabitatFullDto findPetHabitatById(Long id) {
+        log.debug("Finding {} by ID: {}", NAME_OBJECT, id);
+
+        PetHabitat findEntity = findById(id);
+
+        log.debug("Found {}: {}", NAME_OBJECT, findEntity.getName());
+        return petHabitatFullDtoMapper.toDto(findEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PetHabitatFullDto> findAllPetHabitat() {
+        log.debug("Finding all {}", NAME_OBJECT);
+
+        List<PetHabitat> petHabitat = petHabitatRepository.findAll();
+        log.info("Found {} {}", petHabitat.size(), NAME_OBJECT);
+
+        return petHabitat.stream()
+                .map(petHabitatFullDtoMapper::toDto)
+                .toList();
+    }
+
+    @Transactional
+    public PetHabitatFullDto updatePetHabitat(Long id, PetHabitatUpdateDto updateDto, Long userId) {
+        log.debug("Updating {} with ID: {}", NAME_OBJECT, id);
+
+        PetHabitat petHabitat = findById(id);
+        petHabitatUpdateDtoMapper.forUpdateEntityFromDto(updateDto, petHabitat);
+
+        petHabitat.setUpdatedAt(LocalDateTime.now());
+        petHabitat.setUpdatedBy(userId);
+
+        PetHabitat updatedPetHabitat = savePetHabitat(petHabitat);
+        log.info("Updated successfully {} with ID: {}", NAME_OBJECT, id);
+
+        return petHabitatFullDtoMapper.toDto(updatedPetHabitat);
+    }
+
+    @Transactional
+    public void softDeletePetHabitat(Long id, Long userId) {
+        log.debug("Soft deleting {} with ID: {}", NAME_OBJECT, id);
+
+        PetHabitat petHabitat = findById(id);
+
+        petHabitat.setDeletedAt(LocalDateTime.now());
+        petHabitat.setDeletedBy(userId);
+
+        savePetHabitat(petHabitat);
+        log.info("Soft deleted successfully {} with ID: {}", NAME_OBJECT, id);
+    }
+
+    @Transactional
+    public void deletePetHabitat(Long id) {
+        log.debug("Hard deleting {} with ID: {}", NAME_OBJECT, id);
+
+        findById(id);
+
+        petHabitatRepository.deleteById(id);
+        log.info("Hard deleted successfully {} with ID: {}", NAME_OBJECT, id);
+    }
+
+    @Transactional(readOnly = true)
+    public PetHabitat findById(Long id) {
+        log.debug("Finding {} by ID: {}", NAME_OBJECT, id);
+        return petHabitatRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Not found {} with ID: {}", NAME_OBJECT, id);
+                    return new NotFoundException("Not found " + NAME_OBJECT + " with ID: " + id);
+                });
+    }
+
+    @Transactional
+    public PetHabitat savePetHabitat(PetHabitat entitySave) {
+        log.debug("Saving {}: {}", NAME_OBJECT, entitySave);
+        if (entitySave.getName() != null) entitySave.setName(entitySave.getName().toUpperCase());
+        return petHabitatRepository.save(entitySave);
+    }
+}
