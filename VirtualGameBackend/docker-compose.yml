@@ -1,0 +1,12 @@
+services:
+  blackjack-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pet-app:latest
+    container_name: pet-app
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    env_file:
+      - _local/config_connections/conn_mysql_clever_mongo_atlas.env
