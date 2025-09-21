@@ -1,18 +1,18 @@
 package com.virtualgame.entites.petHabitat.mapper;
 
 import com.virtualgame.entites.petHabitat.PetHabitat;
-import com.virtualgame.entites.petHabitat.dto.PetHabitatFullDto;
+import com.virtualgame.entites.petHabitat.dto.PetHabitatRespAdminDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface PetHabitatFullDtoMapper {
+public interface PetHabitatRespAdminDtoMapper {
 
-    PetHabitatFullDto toDto(PetHabitat petHabitat);
+    PetHabitatRespAdminDto toDto(PetHabitat petHabitat);
 
-    PetHabitat toEntity(PetHabitatFullDto petHabitatFullDto);
+    PetHabitat toEntity(PetHabitatRespAdminDto petHabitatRespAdminDto);
 
-    void updateEntityFromDto(PetHabitatFullDto dto, @MappingTarget PetHabitat entity);
+    void updateEntityFromDto(PetHabitatRespAdminDto dto, @MappingTarget PetHabitat entity);
 }

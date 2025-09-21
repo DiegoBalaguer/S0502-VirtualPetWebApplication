@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
-public record PetHabitatFullDto(
+public record PetHabitatRespAdminDto(
         @Schema(description = "Pet's action identifier", example = "1001")
         Long id,
 

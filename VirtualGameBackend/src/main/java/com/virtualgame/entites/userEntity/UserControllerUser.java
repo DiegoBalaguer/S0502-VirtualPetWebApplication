@@ -31,7 +31,7 @@ public class UserControllerUser {
     @GetMapping("/user/find")
     public ResponseEntity<UserRespUserDto> findUserProfile() {
         return ResponseEntity.ok(
-                userRespUserDtoMapper.toBasicFromFullDto(
+                userRespUserDtoMapper.toDtoByAdminDto(
                 userServiceImpl.findUserEntityById(currentUserService.getCurrentUserId())));
     }
 

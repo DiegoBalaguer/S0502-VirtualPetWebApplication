@@ -1,7 +1,7 @@
 package com.virtualgame.entites.petHabitat;
 
 import com.virtualgame.entites.petHabitat.dto.PetHabitatCreateDto;
-import com.virtualgame.entites.petHabitat.dto.PetHabitatFullDto;
+import com.virtualgame.entites.petHabitat.dto.PetHabitatRespAdminDto;
 import com.virtualgame.entites.petHabitat.dto.PetHabitatUpdateDto;
 import com.virtualgame.security.auth.CurrentUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,10 +31,10 @@ public class PetHabitatControllerAdmin {
             @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PostMapping("/pet-habitat/create")
-    public ResponseEntity<PetHabitatFullDto> createPetHabitat(
+    public ResponseEntity<PetHabitatRespAdminDto> createPetHabitat(
             @RequestBody @Valid PetHabitatCreateDto createDto) {
 
-        PetHabitatFullDto createdPetHabitat = petHabitatServiceImpl.createPetHabitat(createDto, currentUserService.getCurrentUserId());
+        PetHabitatRespAdminDto createdPetHabitat = petHabitatServiceImpl.createPetHabitat(createDto, currentUserService.getCurrentUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPetHabitat);
     }
 
@@ -44,16 +44,16 @@ public class PetHabitatControllerAdmin {
             @ApiResponse(responseCode = "404", description = "pet habitat not found")
     })
     @GetMapping("/pet-habitat/find/{id}")
-    public ResponseEntity<PetHabitatFullDto> findPetHabitatById(@PathVariable Long id) {
-        PetHabitatFullDto petHabitat = petHabitatServiceImpl.findPetHabitatById(id);
+    public ResponseEntity<PetHabitatRespAdminDto> findPetHabitatById(@PathVariable Long id) {
+        PetHabitatRespAdminDto petHabitat = petHabitatServiceImpl.findPetHabitatById(id);
         return ResponseEntity.ok(petHabitat);
     }
 
     @Operation(summary = "Find all pet habitat", description = "Retrieves all pet habitat from the system")
     @ApiResponse(responseCode = "200", description = "List of pet habitat retrieved")
     @GetMapping("/pet-habitat/list")
-    public ResponseEntity<List<PetHabitatFullDto>> findAllPetEntities() {
-        List<PetHabitatFullDto> petHabitats = petHabitatServiceImpl.findAllPetHabitat();
+    public ResponseEntity<List<PetHabitatRespAdminDto>> findAllPetEntities() {
+        List<PetHabitatRespAdminDto> petHabitats = petHabitatServiceImpl.findAllPetHabitat();
         return ResponseEntity.ok(petHabitats);
     }
 
@@ -64,11 +64,11 @@ public class PetHabitatControllerAdmin {
             @ApiResponse(responseCode = "404", description = "pet habitat not found")
     })
     @PutMapping("/pet-habitat/update/{id}")
-    public ResponseEntity<PetHabitatFullDto> updatePetHabitat(
+    public ResponseEntity<PetHabitatRespAdminDto> updatePetHabitat(
             @PathVariable Long id,
             @RequestBody @Valid PetHabitatUpdateDto updateDto) {
         
-        PetHabitatFullDto updatedPetHabitat = petHabitatServiceImpl.updatePetHabitat(id, updateDto, currentUserService.getCurrentUserId());
+        PetHabitatRespAdminDto updatedPetHabitat = petHabitatServiceImpl.updatePetHabitat(id, updateDto, currentUserService.getCurrentUserId());
         return ResponseEntity.ok(updatedPetHabitat);
     }
 

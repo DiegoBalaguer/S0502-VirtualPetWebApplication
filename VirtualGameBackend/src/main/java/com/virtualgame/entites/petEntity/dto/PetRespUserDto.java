@@ -2,7 +2,7 @@ package com.virtualgame.entites.petEntity.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public record PetBasicDto(
+public record PetRespUserDto(
         @Schema(description = "Pet's entity identifier", example = "1001")
         Long id,
 

@@ -10,7 +10,7 @@ public interface UserRespUserDtoMapper {
 
     UserEntity toEntity(UserRespUserDto dto);
 
-    UserRespUserDto toBasicDto(UserEntity entity);
+    UserRespUserDto toDto(UserEntity entity);
 
-    UserRespUserDto toBasicFromFullDto(UserRespAdminDto dto);
+    UserRespUserDto toDtoByAdminDto(UserRespAdminDto adminDto);
 }

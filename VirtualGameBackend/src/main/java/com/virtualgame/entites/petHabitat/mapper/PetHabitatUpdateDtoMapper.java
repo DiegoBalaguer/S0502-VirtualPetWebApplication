@@ -14,6 +14,6 @@ public interface PetHabitatUpdateDtoMapper {
 
     PetHabitat toUpdateEntity(PetHabitatUpdateDto dto);
 
-    PetHabitatUpdateDto toUpdateFullDto(PetHabitat entity);
+    PetHabitatUpdateDto toUpdateAdminDto(PetHabitat entity);
 }
 

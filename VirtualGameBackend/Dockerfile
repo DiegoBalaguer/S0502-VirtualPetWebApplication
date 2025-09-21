@@ -4,7 +4,7 @@ FROM maven:3.9.10-eclipse-temurin-24 AS builder
 WORKDIR /pet-app
 
 # Copiar el archivo pom.xml y las dependencias de Maven primero
-COPY pom.xml .
+COPY VirtualGameBackend/pom.xml .
 RUN mvn dependency:go-offline -B
 
 # Copiar el resto de la aplicación

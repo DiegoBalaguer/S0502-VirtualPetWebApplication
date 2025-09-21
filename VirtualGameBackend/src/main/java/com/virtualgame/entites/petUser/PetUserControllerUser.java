@@ -1,8 +1,8 @@
 package com.virtualgame.entites.petUser;
 
+import com.virtualgame.entites.petUser.dto.PetUserCreateDto;
 import com.virtualgame.entites.petUser.dto.PetUserRespAdminDto;
 import com.virtualgame.security.auth.CurrentUserService;
-import com.virtualgame.entites.petUser.dto.PetUserCreateDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -17,9 +17,9 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/pets-users")
-@Tag(name = "API Manage Pets User (ADMIN)", description = "Endpoints for managing user pets")
-public class PetUserControllerAdmin {
+@RequestMapping("/api/user/pets-users")
+@Tag(name = "API Manage Pets User (USER)", description = "Endpoints for managing user pets")
+public class PetUserControllerUser {
 
     private final PetUserServiceImpl petUserServiceImpl;
     private final CurrentUserService currentUserService;
@@ -99,6 +99,26 @@ public class PetUserControllerAdmin {
     @ApiResponse(responseCode = "200", description = "List of matching pets")
     @GetMapping("/find-by-type")
     public ResponseEntity<List<PetUserRespAdminDto>> findPetsByType(
+            @RequestParam Long typeId) {
+
+        List<PetUserRespAdminDto> pets = petUserServiceImpl.findPetsUserByType(typeId);
+        return ResponseEntity.ok(pets);
+    }
+
+    @Operation(summary = "Do action for pet user", description = "do action for pet user")
+    @ApiResponse(responseCode = "200", description = "do action")
+    @GetMapping("/do-action")
+    public ResponseEntity<List<PetUserRespAdminDto>> doAction(
+            @RequestParam Long typeId) {
+
+        List<PetUserRespAdminDto> pets = petUserServiceImpl.findPetsUserByType(typeId);
+        return ResponseEntity.ok(pets);
+    }
+
+    @Operation(summary = "Change habitat for pet user", description = "Change habitat for pet user")
+    @ApiResponse(responseCode = "200", description = "Change habitat")
+    @GetMapping("/do-move")
+    public ResponseEntity<List<PetUserRespAdminDto>> doMove(
             @RequestParam Long typeId) {
 
         List<PetUserRespAdminDto> pets = petUserServiceImpl.findPetsUserByType(typeId);

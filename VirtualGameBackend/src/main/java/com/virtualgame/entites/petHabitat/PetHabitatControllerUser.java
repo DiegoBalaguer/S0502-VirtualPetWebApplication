@@ -1,8 +1,8 @@
 package com.virtualgame.entites.petHabitat;
 
-import com.virtualgame.entites.petHabitat.dto.PetHabitatBasicDto;
-import com.virtualgame.entites.petHabitat.mapper.PetHabitatBasicDtoMapper;
-import com.virtualgame.entites.petHabitat.dto.PetHabitatFullDto;
+import com.virtualgame.entites.petHabitat.dto.PetHabitatRespAdminDto;
+import com.virtualgame.entites.petHabitat.dto.PetHabitatRespUserDto;
+import com.virtualgame.entites.petHabitat.mapper.PetHabitatRespUserDtoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class PetHabitatControllerUser {
 
     private final PetHabitatServiceImpl petHabitatServiceImpl;
-    private final PetHabitatBasicDtoMapper petHabitatBasicDtoMapper;
+    private final PetHabitatRespUserDtoMapper petHabitatRespUserDtoMapper;
 
     @Operation(summary = "Find pet habitat by ID", description = "Retrieves a specific pet habitat by its ID")
     @ApiResponses(value = {
@@ -32,19 +32,19 @@ public class PetHabitatControllerUser {
             @ApiResponse(responseCode = "404", description = "pet habitat not found")
     })
     @GetMapping("/pet-habitat/find/{id}")
-    public ResponseEntity<PetHabitatBasicDto> findPetHabitatById(@PathVariable Long id) {
-        PetHabitatFullDto petHabitat = petHabitatServiceImpl.findPetHabitatById(id);
-        return ResponseEntity.ok(petHabitatBasicDtoMapper.toDtoByFullDto(petHabitat));
+    public ResponseEntity<PetHabitatRespUserDto> findPetHabitatById(@PathVariable Long id) {
+        PetHabitatRespAdminDto petHabitat = petHabitatServiceImpl.findPetHabitatById(id);
+        return ResponseEntity.ok(petHabitatRespUserDtoMapper.toDtoByAdminDto(petHabitat));
     }
 
     @Operation(summary = "Find all pet habitat", description = "Retrieves all pet habitat from the system")
     @ApiResponse(responseCode = "200", description = "List of pet habitat retrieved")
     @GetMapping("/pet-habitat/list")
-    public ResponseEntity<List<PetHabitatBasicDto>> findAllPetEntities() {
-        List<PetHabitatFullDto> petEntities = petHabitatServiceImpl.findAllPetHabitat();
+    public ResponseEntity<List<PetHabitatRespUserDto>> findAllPetEntities() {
+        List<PetHabitatRespAdminDto> petEntities = petHabitatServiceImpl.findAllPetHabitat();
 
         return ResponseEntity.ok(petEntities.stream()
-                .map(petHabitatBasicDtoMapper::toDtoByFullDto)
+                .map(petHabitatRespUserDtoMapper::toDtoByAdminDto)
                 .collect(Collectors.toList()));
     }
 }

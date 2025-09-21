@@ -77,7 +77,7 @@ public class UserServiceImpl {
         UserEntity findEntity = findById(userId);
 
         log.debug("Found {}: {}", NAME_OBJECT, findEntity.getUsername());
-        return userRespAdminDtoMapper.toFullDto(findEntity);
+        return userRespAdminDtoMapper.toDto(findEntity);
     }
 
     @Transactional(readOnly = true)

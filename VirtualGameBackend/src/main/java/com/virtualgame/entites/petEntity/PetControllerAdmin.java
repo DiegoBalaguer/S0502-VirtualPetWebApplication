@@ -1,7 +1,7 @@
 package com.virtualgame.entites.petEntity;
 
 import com.virtualgame.entites.petEntity.dto.PetCreateDto;
-import com.virtualgame.entites.petEntity.dto.PetFullDto;
+import com.virtualgame.entites.petEntity.dto.PetRespAdminDto;
 import com.virtualgame.entites.petEntity.dto.PetUpdateDto;
 import com.virtualgame.security.auth.CurrentUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,10 +31,10 @@ public class PetControllerAdmin {
             @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PostMapping("/pet-entity/create")
-    public ResponseEntity<PetFullDto> createPetEntity(
+    public ResponseEntity<PetRespAdminDto> createPetEntity(
             @RequestBody @Valid PetCreateDto createDto) {
 
-        PetFullDto createdPetEntity = petServiceImpl.createPetEntity(createDto, currentUserService.getCurrentUserId());
+        PetRespAdminDto createdPetEntity = petServiceImpl.createPetEntity(createDto, currentUserService.getCurrentUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPetEntity);
     }
 
@@ -44,16 +44,16 @@ public class PetControllerAdmin {
             @ApiResponse(responseCode = "404", description = "pet entity not found")
     })
     @GetMapping("/pet-entity/find/{id}")
-    public ResponseEntity<PetFullDto> findPetEntityById(@PathVariable Long id) {
-        PetFullDto petEntity = petServiceImpl.findPetEntityById(id);
+    public ResponseEntity<PetRespAdminDto> findPetEntityById(@PathVariable Long id) {
+        PetRespAdminDto petEntity = petServiceImpl.findPetEntityById(id);
         return ResponseEntity.ok(petEntity);
     }
 
     @Operation(summary = "Find all pet entity", description = "Retrieves all pet entity from the system")
     @ApiResponse(responseCode = "200", description = "List of pet entity retrieved")
     @GetMapping("/pet-entity/list")
-    public ResponseEntity<List<PetFullDto>> findAllPetEntities() {
-        List<PetFullDto> petEntitys = petServiceImpl.findAllPetEntity();
+    public ResponseEntity<List<PetRespAdminDto>> findAllPetEntities() {
+        List<PetRespAdminDto> petEntitys = petServiceImpl.findAllPetEntity();
         return ResponseEntity.ok(petEntitys);
     }
 
@@ -64,11 +64,11 @@ public class PetControllerAdmin {
             @ApiResponse(responseCode = "404", description = "pet entity not found")
     })
     @PutMapping("/pet-entity/update/{id}")
-    public ResponseEntity<PetFullDto> updatePetEntity(
+    public ResponseEntity<PetRespAdminDto> updatePetEntity(
             @PathVariable Long id,
             @RequestBody @Valid PetUpdateDto updateDto) {
         
-        PetFullDto updatedPetEntity = petServiceImpl.updatePetEntity(id, updateDto, currentUserService.getCurrentUserId());
+        PetRespAdminDto updatedPetEntity = petServiceImpl.updatePetEntity(id, updateDto, currentUserService.getCurrentUserId());
         return ResponseEntity.ok(updatedPetEntity);
     }
 

@@ -9,6 +9,6 @@ public interface UserRespAdminDtoMapper {
 
     UserEntity toEntity(UserRespAdminDto dto);
 
-    UserRespAdminDto toFullDto(UserEntity entity);
+    UserRespAdminDto toDto(UserEntity entity);
 }
 

@@ -2,6 +2,8 @@ package com.virtualgame.entites.petUser;
 
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.petUser.dto.*;
+import com.virtualgame.entites.petUser.mapper.PetUserCreateDtoMapper;
+import com.virtualgame.entites.petUser.mapper.PetUserRespAdminDtoMapper;
 import com.virtualgame.exception.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +19,13 @@ import java.util.List;
 public class PetUserServiceImpl {
 
     private final PetUserRepository petUserRepository;
-    private final PetUserFullDtoMapper petUserFullDtoMapper;
+    private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
     private final PetUserCreateDtoMapper petUserCreateDtoMapper;
     private final AppProperties appProperties;
     private static final String NAME_OBJECT = "pet user entity";
 
     @Transactional
-    public PetUserFullDto createPetUser(PetUserCreateDto createDto, Long userId) {
+    public PetUserRespAdminDto createPetUser(PetUserCreateDto createDto, Long userId) {
         log.debug("Creating new {} with name: {}", NAME_OBJECT, createDto.name());
 
         PetUser pet = petUserCreateDtoMapper.toEntity(createDto);
@@ -40,37 +42,37 @@ public class PetUserServiceImpl {
         PetUser savedEntity = saveUserPet(pet);
         log.info("Created {} successfully with ID: {}", NAME_OBJECT, savedEntity.getId());
 
-        return petUserFullDtoMapper.toFullDto(savedEntity);
+        return petUserRespAdminDtoMapper.toDto(savedEntity);
     }
 
     @Transactional(readOnly = true)
-    public PetUserFullDto findPetUserById(Long id) {
+    public PetUserRespAdminDto findPetUserById(Long id) {
         log.debug("Finding {} by ID: {}", NAME_OBJECT, id);
 
         PetUser findEntity = findById(id);
 
         log.debug("Found {}: {}", NAME_OBJECT, findEntity.getName());
-        return petUserFullDtoMapper.toFullDto(findEntity);
+        return petUserRespAdminDtoMapper.toDto(findEntity);
     }
 
     @Transactional(readOnly = true)
-    public List<PetUserFullDto> findAllPetsUser() {
+    public List<PetUserRespAdminDto> findAllPetsUser() {
         log.debug("Finding all {}", NAME_OBJECT);
 
         List<PetUser> pets = petUserRepository.findAll();
         log.info("Found {} {}", pets.size(), NAME_OBJECT);
 
         return pets.stream()
-                .map(petUserFullDtoMapper::toFullDto)
+                .map(petUserRespAdminDtoMapper::toDto)
                 .toList();
     }
 
     @Transactional
-    public PetUserFullDto updatePetUser(Long id, PetUserFullDto petUserFullDto, Long userId) {
+    public PetUserRespAdminDto updatePetUser(Long id, PetUserRespAdminDto petUserRespAdminDto, Long userId) {
         log.debug("Updating {} with ID: {}", NAME_OBJECT, id);
 
         PetUser userPet = findById(id);
-        petUserFullDtoMapper.forUpdateEntityFromDto(petUserFullDto, userPet);
+        petUserRespAdminDtoMapper.updateEntityFromDto(petUserRespAdminDto, userPet);
 
         userPet.setUpdatedAt(LocalDateTime.now());
         userPet.setUpdatedBy(userId);
@@ -78,7 +80,7 @@ public class PetUserServiceImpl {
         PetUser updatedPet = saveUserPet(userPet);
         log.info("Updated successfully {} with ID: {}", NAME_OBJECT, id);
 
-        return petUserFullDtoMapper.toFullDto(updatedPet);
+        return petUserRespAdminDtoMapper.toDto(updatedPet);
     }
 
     @Transactional
@@ -129,14 +131,14 @@ public class PetUserServiceImpl {
 
 
     @Transactional(readOnly = true)
-    public List<PetUserFullDto> findPetsUserByType(Long petTypeId) {
+    public List<PetUserRespAdminDto> findPetsUserByType(Long petTypeId) {
         log.debug("Finding {} by type ID: {}", NAME_OBJECT, petTypeId);
 
         List<PetUser> pets = petUserRepository.findByPetTypeId(petTypeId);
         log.info("Found {} {} with type ID: {}", pets.size(), NAME_OBJECT, petTypeId);
 
         return pets.stream()
-                .map(petUserFullDtoMapper::toFullDto)
+                .map(petUserRespAdminDtoMapper::toDto)
                 .toList();
     }
 

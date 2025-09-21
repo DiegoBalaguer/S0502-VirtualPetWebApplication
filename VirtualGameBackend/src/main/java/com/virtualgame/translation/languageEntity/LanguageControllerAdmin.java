@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/languages")
+@RequestMapping("/api/admin/translation/languages")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "API Manage Translations - Languages (ADMIN)", description = "API for managing languages")

@@ -12,6 +12,6 @@ public interface PetActionRespUserDtoMapper {
 
     PetActionRespUserDto toDto(PetAction entity);
 
-    PetActionRespUserDto toDtoByFullDto(PetActionRespAdminDto fullDto);
+    PetActionRespUserDto toDtoByAdminDto(PetActionRespAdminDto adminDto);
 }
 

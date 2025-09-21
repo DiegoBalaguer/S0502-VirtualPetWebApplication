@@ -3,7 +3,7 @@ package com.virtualgame.entites.petEntity;
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.petEntity.dto.*;
 import com.virtualgame.entites.petEntity.mapper.PetCreateDtoMapper;
-import com.virtualgame.entites.petEntity.mapper.PetFullDtoMapper;
+import com.virtualgame.entites.petEntity.mapper.PetRespAdminDtoMapper;
 import com.virtualgame.entites.petEntity.mapper.PetUpdateDtoMapper;
 import com.virtualgame.exception.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +21,13 @@ public class PetServiceImpl {
 
     private final PetRepository petRepository;
     private final PetCreateDtoMapper petCreateDtoMapper;
-    private final PetFullDtoMapper petFullDtoMapper;
+    private final PetRespAdminDtoMapper petRespAdminDtoMapper;
     private final PetUpdateDtoMapper petUpdateDtoMapper;
     private static final String NAME_OBJECT = "pet entity";
     private final AppProperties appProperties;
 
     @Transactional
-    public PetFullDto createPetEntity(PetCreateDto createDto, Long userId) {
+    public PetRespAdminDto createPetEntity(PetCreateDto createDto, Long userId) {
         log.debug("Creating new {} with name: {}",NAME_OBJECT, createDto.name());
 
         PetEntity petEntity = petCreateDtoMapper.toEntity(createDto);
@@ -41,33 +41,33 @@ public class PetServiceImpl {
         PetEntity savedEntity = savePetEntity(petEntity);
         log.info("Created {} successfully with ID: {}",NAME_OBJECT, savedEntity.getId());
 
-        return petFullDtoMapper.toDto(savedEntity);
+        return petRespAdminDtoMapper.toDto(savedEntity);
     }
 
     @Transactional(readOnly = true)
-    public PetFullDto findPetEntityById(Long id) {
+    public PetRespAdminDto findPetEntityById(Long id) {
         log.debug("Finding {} by ID: {}", NAME_OBJECT, id);
 
         PetEntity findEntity = findById(id);
 
         log.debug("Found {}: {}", NAME_OBJECT, findEntity.getName());
-        return petFullDtoMapper.toDto(findEntity);
+        return petRespAdminDtoMapper.toDto(findEntity);
     }
 
     @Transactional(readOnly = true)
-    public List<PetFullDto> findAllPetEntity() {
+    public List<PetRespAdminDto> findAllPetEntity() {
         log.debug("Finding all {}", NAME_OBJECT);
 
         List<PetEntity> petEntity = petRepository.findAll();
         log.info("Found {} {}", petEntity.size(), NAME_OBJECT);
 
         return petEntity.stream()
-                .map(petFullDtoMapper::toDto)
+                .map(petRespAdminDtoMapper::toDto)
                 .toList();
     }
 
     @Transactional
-    public PetFullDto updatePetEntity(Long id, PetUpdateDto updateDto, Long userId) {
+    public PetRespAdminDto updatePetEntity(Long id, PetUpdateDto updateDto, Long userId) {
         log.debug("Updating {} with ID: {}", NAME_OBJECT, id);
 
         PetEntity petEntity = findById(id);
@@ -79,7 +79,7 @@ public class PetServiceImpl {
         PetEntity updatedPetEntity = savePetEntity(petEntity);
         log.info("Updated successfully {} with ID: {}", NAME_OBJECT, id);
 
-        return petFullDtoMapper.toDto(updatedPetEntity);
+        return petRespAdminDtoMapper.toDto(updatedPetEntity);
     }
 
     @Transactional

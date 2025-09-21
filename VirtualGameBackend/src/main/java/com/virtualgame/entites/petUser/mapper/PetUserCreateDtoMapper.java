@@ -1,6 +1,7 @@
-package com.virtualgame.entites.petUser.dto;
+package com.virtualgame.entites.petUser.mapper;
 
 import com.virtualgame.entites.petUser.PetUser;
+import com.virtualgame.entites.petUser.dto.PetUserCreateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;

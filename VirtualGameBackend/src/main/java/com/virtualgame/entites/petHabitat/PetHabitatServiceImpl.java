@@ -3,7 +3,7 @@ package com.virtualgame.entites.petHabitat;
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.petHabitat.dto.*;
 import com.virtualgame.entites.petHabitat.mapper.PetHabitatCreateDtoMapper;
-import com.virtualgame.entites.petHabitat.mapper.PetHabitatFullDtoMapper;
+import com.virtualgame.entites.petHabitat.mapper.PetHabitatRespAdminDtoMapper;
 import com.virtualgame.entites.petHabitat.mapper.PetHabitatUpdateDtoMapper;
 import com.virtualgame.exception.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +21,13 @@ public class PetHabitatServiceImpl {
 
     private final PetHabitatRepository petHabitatRepository;
     private final PetHabitatCreateDtoMapper petHabitatCreateDtoMapper;
-    private final PetHabitatFullDtoMapper petHabitatFullDtoMapper;
+    private final PetHabitatRespAdminDtoMapper petHabitatRespAdminDtoMapper;
     private final PetHabitatUpdateDtoMapper petHabitatUpdateDtoMapper;
     private static final String NAME_OBJECT = "pet habitat";
     private final AppProperties appProperties;
 
     @Transactional
-    public PetHabitatFullDto createPetHabitat(PetHabitatCreateDto createDto, Long userId) {
+    public PetHabitatRespAdminDto createPetHabitat(PetHabitatCreateDto createDto, Long userId) {
         log.debug("Creating new {} with name: {}", NAME_OBJECT, createDto.name());
 
         PetHabitat petHabitat = petHabitatCreateDtoMapper.toEntity(createDto);
@@ -47,33 +47,33 @@ public class PetHabitatServiceImpl {
         PetHabitat savedEntity = savePetHabitat(petHabitat);
         log.info("Created {} successfully with ID: {}", NAME_OBJECT, savedEntity.getId());
 
-        return petHabitatFullDtoMapper.toDto(savedEntity);
+        return petHabitatRespAdminDtoMapper.toDto(savedEntity);
     }
 
     @Transactional(readOnly = true)
-    public PetHabitatFullDto findPetHabitatById(Long id) {
+    public PetHabitatRespAdminDto findPetHabitatById(Long id) {
         log.debug("Finding {} by ID: {}", NAME_OBJECT, id);
 
         PetHabitat findEntity = findById(id);
 
         log.debug("Found {}: {}", NAME_OBJECT, findEntity.getName());
-        return petHabitatFullDtoMapper.toDto(findEntity);
+        return petHabitatRespAdminDtoMapper.toDto(findEntity);
     }
 
     @Transactional(readOnly = true)
-    public List<PetHabitatFullDto> findAllPetHabitat() {
+    public List<PetHabitatRespAdminDto> findAllPetHabitat() {
         log.debug("Finding all {}", NAME_OBJECT);
 
         List<PetHabitat> petHabitat = petHabitatRepository.findAll();
         log.info("Found {} {}", petHabitat.size(), NAME_OBJECT);
 
         return petHabitat.stream()
-                .map(petHabitatFullDtoMapper::toDto)
+                .map(petHabitatRespAdminDtoMapper::toDto)
                 .toList();
     }
 
     @Transactional
-    public PetHabitatFullDto updatePetHabitat(Long id, PetHabitatUpdateDto updateDto, Long userId) {
+    public PetHabitatRespAdminDto updatePetHabitat(Long id, PetHabitatUpdateDto updateDto, Long userId) {
         log.debug("Updating {} with ID: {}", NAME_OBJECT, id);
 
         PetHabitat petHabitat = findById(id);
@@ -85,7 +85,7 @@ public class PetHabitatServiceImpl {
         PetHabitat updatedPetHabitat = savePetHabitat(petHabitat);
         log.info("Updated successfully {} with ID: {}", NAME_OBJECT, id);
 
-        return petHabitatFullDtoMapper.toDto(updatedPetHabitat);
+        return petHabitatRespAdminDtoMapper.toDto(updatedPetHabitat);
     }
 
     @Transactional
