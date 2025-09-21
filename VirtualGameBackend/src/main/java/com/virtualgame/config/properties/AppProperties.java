@@ -12,6 +12,10 @@ import org.springframework.stereotype.Component;
 public class AppProperties {
 
     // SYSTEM
+    private Boolean heartbeatIsActive;
+    private String heartbeatAddressHost;
+    private String heartbeatEndPoint;
+    private String heartbeatTimeInterval;
     private String defaultLanguageSystem;
     private String defaultLanguageUser;
 

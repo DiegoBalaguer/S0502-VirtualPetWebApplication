@@ -50,6 +50,7 @@ public class SecurityConfig {
                     // Configurar los endpoints públicos
                     http.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll();
                     http.requestMatchers("/api/test/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/public/**").permitAll();
                     http.requestMatchers(HttpMethod.POST, "/method/load").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/method/users").permitAll();
                     http.requestMatchers("/swagger-ui/**").permitAll();
