@@ -57,9 +57,15 @@ public class AppProperties {
 
     private Integer defaultPetActionAgeMin;
 
-    private Integer defaultPetHabitatDomedCityId;
-    private Integer defaultPetHabitatSanctuaryId;
-    private Integer defaultPetHabitatEscapeId;
+    private Long defaultPetHabitatDomedCityId;
+    private Long defaultPetHabitatSanctuaryId;
+    private Long defaultPetHabitatCarrouselId;
+    private Long defaultPetHabitatCementerId;
+    private Long defaultPetHabitatEscapeId;
+
+
+
+
 
 
 

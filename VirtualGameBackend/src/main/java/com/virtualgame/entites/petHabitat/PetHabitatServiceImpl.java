@@ -127,4 +127,10 @@ public class PetHabitatServiceImpl {
         if (entitySave.getName() != null) entitySave.setName(entitySave.getName().toUpperCase());
         return petHabitatRepository.save(entitySave);
     }
+
+    public boolean isInDomedCity(Long habitatId) {
+        Long domedCityId = appProperties.getDefaultPetHabitatDomedCityId();
+        PetHabitat petHabitat = findById(habitatId);
+        return (petHabitat.getId().equals(domedCityId) || petHabitat.getParentId().equals(domedCityId));
+    }
 }

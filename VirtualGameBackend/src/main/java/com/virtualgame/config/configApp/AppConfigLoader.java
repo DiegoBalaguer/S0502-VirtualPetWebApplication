@@ -63,6 +63,8 @@ public class AppConfigLoader implements ApplicationRunner {
             return targetType.cast(Double.valueOf(value));
         } else if (targetType.equals(Float.class)) {
             return targetType.cast(Float.valueOf(value));
+        } else if (targetType.equals(Long.class)) {
+            return targetType.cast(Long.valueOf(value));
         } else {
             throw new IllegalArgumentException("Unknown data type for conversion: " + targetType.getSimpleName());
         }

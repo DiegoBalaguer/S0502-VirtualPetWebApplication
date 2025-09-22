@@ -118,25 +118,25 @@ public class PetUserControllerUser {
 
     @Operation(summary = "Do action for pet user", description = "do action for pet user")
     @ApiResponse(responseCode = "200", description = "do action")
-    @PostMapping("/do-action/{petUserId}")
+    @PostMapping("/do-action/{petUserId}/{petUserActionId}")
     public ResponseEntity<PetUserRespUserDto> doAction(
             @PathVariable Long petUserId,
-            @RequestBody @Valid PetUserDoActionDto doActionDto) {
+            @PathVariable Long petUserActionId) {
 
         PetUserRespAdminDto respAdminDto = petUserServiceImpl
-                .doActionPetUser(petUserId, currentUserService.getCurrentUserId(), doActionDto);
+                .doActionPetUser(petUserId, currentUserService.getCurrentUserId(), petUserActionId);
         return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
     }
 
     @Operation(summary = "Change habitat for pet user", description = "Change habitat for pet user")
     @ApiResponse(responseCode = "200", description = "Change habitat")
-    @PostMapping("/do-move/{petUserId}")
+    @PostMapping("/do-move/{petUserId}/{petUserHabitatId}")
     public ResponseEntity<PetUserRespUserDto> doMove(
     @PathVariable Long petUserId,
-    @RequestBody @Valid PetUserDoMoveDto doMoveDto) {
+    @PathVariable Long petUserHabitatId) {
 
         PetUserRespAdminDto respAdminDto = petUserServiceImpl
-                .doMovePetUser(petUserId, currentUserService.getCurrentUserId(), doMoveDto);
+                .doMovePetUser(petUserId, currentUserService.getCurrentUserId(), petUserHabitatId);
         return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
     }
 }

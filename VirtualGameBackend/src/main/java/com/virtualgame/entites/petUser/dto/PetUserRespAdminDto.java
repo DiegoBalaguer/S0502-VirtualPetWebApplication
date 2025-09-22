@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public record PetUserRespAdminDto(
         @Schema(description = "Pet's identifier", example = "1001")
         Long id,
-        @Schema(description = "Pet's name.", example = "Maravilla")
+        @Schema(description = "Pet's name.", example = "Esther")
         String name,
         @Schema(description = "Proprietary user Pet's identifier in the system.", example = "1001")
         Long userId,

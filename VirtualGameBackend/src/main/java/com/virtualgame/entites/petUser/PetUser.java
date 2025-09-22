@@ -22,7 +22,7 @@ public class PetUser {
     @Schema(description = "Pet's identifier in the system.", example = "1001")
     private Long id;
     @Column(unique = true)
-    @Schema(description = "Pet's name.", example = "Maravilla")
+    @Schema(description = "Pet's name.", example = "Esther")
     private String name;
     @Schema(description = "Proprietary user Pet's identifier in the system.", example = "1001")
     private Long userId;

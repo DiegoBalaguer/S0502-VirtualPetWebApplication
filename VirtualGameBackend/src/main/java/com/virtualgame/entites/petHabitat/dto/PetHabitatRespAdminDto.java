@@ -1,6 +1,7 @@
 package com.virtualgame.entites.petHabitat.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 
 import java.time.LocalDateTime;
 
@@ -8,14 +9,32 @@ public record PetHabitatRespAdminDto(
         @Schema(description = "Pet's action identifier", example = "1001")
         Long id,
 
+        @Schema(description = "Pet's habitat parent identifier.", example = "1001")
+        Long parentId,
+
         @Schema(description = "Pet's action name", example = "RUN")
         String name,
 
         @Schema(description = "Pet's action imageUrl", example = "https://i.pravatar.cc/200?img=46")
         String imageUrl,
 
+        @Schema(description = "Pet's habitat happy.", example = "5")
+        Integer happy,
+        @Schema(description = "Pet's habitat tired.", example = "-5")
+        Integer tired,
+        @Schema(description = "Pet's habitat hungry.", example = "10")
+        Integer hungry,
+        @Schema(description = "Pet's habitat months.", example = "1")
+        Integer months,
+        @Schema(description = "Pet's habitat age.", example = "0")
+        Integer age,
+        @Schema(description = "Minium age for pet's habitat age.", example = "0")
+        Integer ageMin,
         @Schema(description = "Date when created", example = "2025-07-15")
         LocalDateTime createdAt,
+
+        @Schema(description = "User ID that created the habitat", example = "1001")
+        Long createdBy,
 
         @Schema(description = "Date when updated", example = "2025-07-15")
         LocalDateTime updatedAt,
@@ -28,4 +47,7 @@ public record PetHabitatRespAdminDto(
 
         @Schema(description = "User ID that deleted the pet action.", example = "1001")
         Long deletedBy
-) {}
+
+
+) {
+}

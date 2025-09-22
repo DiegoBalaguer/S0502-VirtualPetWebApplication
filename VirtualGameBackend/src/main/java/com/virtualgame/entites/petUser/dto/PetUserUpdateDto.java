@@ -6,7 +6,7 @@ public record PetUserUpdateDto(
         @Schema(description = "Pet's identifier", example = "1001")
         Long id,
 
-        @Schema(description = "Pet's name", example = "Maravilla")
+        @Schema(description = "Pet's name", example = "Esther")
         String name,
 
         @Schema(description = "Pet's type ID", example = "1")
