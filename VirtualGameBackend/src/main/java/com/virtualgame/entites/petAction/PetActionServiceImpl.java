@@ -47,11 +47,11 @@ public class PetActionServiceImpl {
         if (createEntity.getHappy() == null) createEntity.setHappy(appPrp.getDefaultPetHappy());
         if (createEntity.getTired() == null) createEntity.setTired(appPrp.getDefaultPetTired());
         if (createEntity.getHungry() == null) createEntity.setHungry(appPrp.getDefaultPetHungry());
-        if (createEntity.getHappyMax() == null) createEntity.setHappyMax(appPrp.getDefaultPetMonths());
+        if (createEntity.getMonths() == null) createEntity.setMonths(appPrp.getDefaultPetMonths());
         if (createEntity.getAge() == null) createEntity.setAge(appPrp.getDefaultPetAge());
         createEntity.setCreatedBy(userId);
 
-        PetAction savedEntity = savePetAction(createEntity);
+        PetAction savedEntity = savePetAction(createEntity, userId);
 
         log.debug(translate
                 .getFormatSys("Created {0} successfully with ID: {1} and name: {2}", NAME_OBJECT, savedEntity.getId(), savedEntity.getName()));
@@ -112,9 +112,8 @@ public class PetActionServiceImpl {
 
         PetAction existing = findById(id);
         petActionUpdateAdminDtoMapper.forUpdateEntityFromDto(updateDto, existing);
-        existing.setUpdatedBy(userId);
 
-        PetAction updated = savePetAction(existing);
+        PetAction updated = savePetAction(existing, userId);
 
         log.debug(translate
                 .getFormatSys("Updated successfully {0} with ID: {1}", NAME_OBJECT, id));
@@ -131,7 +130,7 @@ public class PetActionServiceImpl {
         existing.setDeletedAt(LocalDateTime.now());
         existing.setDeletedBy(userId);
 
-        PetAction updated = savePetAction(existing);
+        PetAction updated = savePetAction(existing, userId);
 
         log.debug(translate
                 .getFormatSys("Soft deleted successfully {0} with ID: {1}", NAME_OBJECT, id));
@@ -150,11 +149,14 @@ public class PetActionServiceImpl {
     }
 
     @Transactional
-    protected PetAction savePetAction(PetAction entitySave) {
+    protected PetAction savePetAction(PetAction entitySave, Long userAuthId) {
         log.debug(translate
                 .getFormatSys("Saving {0}: {1}", NAME_OBJECT, entitySave));
 
         if (entitySave.getName() != null) entitySave.setName(entitySave.getName().toUpperCase());
+
+        entitySave.setUpdatedBy(userAuthId);
+
         PetAction savedEntity = petActionRepository.save(entitySave);
 
         log.debug(translate

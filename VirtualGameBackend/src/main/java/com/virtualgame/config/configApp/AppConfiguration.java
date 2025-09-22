@@ -29,4 +29,7 @@ public class AppConfiguration {
 
     @Schema(description = "Configuration key value.", example = "10")
     private String keyValue;
+
+    @Schema(description = "Description value.", example = "Default value for pet hapy under creation")
+    private String keyDescription;
 }

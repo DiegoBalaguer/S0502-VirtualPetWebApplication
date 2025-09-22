@@ -33,17 +33,17 @@ public class PetActionControllerUser {
     })
     @GetMapping("/pet-action/find/{id}")
     public ResponseEntity<PetActionRespUserDto> findPetActionById(@PathVariable Long id) {
-        PetActionRespAdminDto petAction = petActionServiceImpl.findPetActionById(id);
-        return ResponseEntity.ok(petActionRespUserDtoMapper.toDtoByAdminDto(petAction));
+        PetActionRespAdminDto respAdminDto = petActionServiceImpl.findPetActionById(id);
+        return ResponseEntity.ok(petActionRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
     }
 
     @Operation(summary = "Find all pet action", description = "Retrieves all pet action from the system")
     @ApiResponse(responseCode = "200", description = "List of pet action retrieved")
     @GetMapping("/pet-action/list")
     public ResponseEntity<List<PetActionRespUserDto>> findAllPetEntities() {
-        List<PetActionRespAdminDto> petEntities = petActionServiceImpl.findAllPetAction();
+        List<PetActionRespAdminDto> respAdminDto = petActionServiceImpl.findAllPetAction();
 
-        return ResponseEntity.ok(petEntities.stream()
+        return ResponseEntity.ok(respAdminDto.stream()
                 .map(petActionRespUserDtoMapper::toDtoByAdminDto)
                 .collect(Collectors.toList()));
     }

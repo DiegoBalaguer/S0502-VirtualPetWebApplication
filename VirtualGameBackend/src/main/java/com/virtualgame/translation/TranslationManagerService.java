@@ -1,6 +1,7 @@
 package com.virtualgame.translation;
 
 import com.virtualgame.config.properties.AppProperties;
+import com.virtualgame.entites.userEntity.UserRepository;
 import com.virtualgame.entites.userEntity.UserServiceImpl;
 import com.virtualgame.translation.languageEntity.LanguageRepository;
 import com.virtualgame.translation.translationEntity.TranslationRepository;
@@ -18,7 +19,7 @@ public class TranslationManagerService {
 
     private final TranslationCacheService translationCacheService;
     private final TranslationRepository translationRepository;
-    private final UserServiceImpl userEntityService;
+    private final UserRepository userRepository;
     private final LanguageRepository languageRepository;
     private final AppProperties appPrp;
     private String langSys;
@@ -38,7 +39,8 @@ public class TranslationManagerService {
     // getFormatedTranslationUser
     public String getFormatUsr(String messageKey, Long userId, Object... args) {
 
-        Long userLanguageId = userEntityService.findUserEntityById(userId).languageId();
+        Long userLanguageId = userRepository.findById(userId).get().getLanguageId();
+
         String codeLang = languageRepository.findById(userLanguageId).get().getCode();
 
         String langUserId = (codeLang.isEmpty()) ? langUser : codeLang;

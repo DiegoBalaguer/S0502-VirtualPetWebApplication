@@ -25,26 +25,38 @@ public class AppProperties {
     private String defaultPetEntityImageUrl;
     private String defaultPetHabitatImageUrl;
     private String defaultPetUserEntityImageUrl;
+
+    private Integer defaultPetAgeDieDomedCity;
+    private Integer defaultPetAgeDieMinOutside;
+    private Integer defaultPetAgeDieMaxOutside;
+
+    private Integer defaultPetMouthsToAge;
+
+    private Integer defaultPetMonths;
+    private Integer defaultPetAge;
+
     private Integer defaultPetHappy;
     private Integer defaultPetTired;
     private Integer defaultPetHungry;
+
     private Integer defaultPetHappyReps;
     private Integer defaultPetTiredReps;
     private Integer defaultPetHungryReps;
+
+    private Integer defaultPetHappyMin;
+    private Integer defaultPetHappyMax;
     private Integer defaultPetHappyDangerReps;
+
+    private Integer defaultPetTiredMin;
+    private Integer defaultPetTiredMax;
     private Integer defaultPetTiredDangerReps;
+
+    private Integer defaultPetHungryMin;
+    private Integer defaultPetHungryMax;
     private Integer defaultPetHungryDangerReps;
-    private Integer defaultPetHappyDangerMin;
-    private Integer defaultPetTiredDangerMin;
-    private Integer defaultPetHungryDangerMin;
-    private Integer defaultPetHappyDanger01Max;
-    private Integer defaultPetHappyDanger02Max;
-    private Integer defaultPetTiredDangerMax;
-    private Integer defaultPetHungryDangerMax;
-    private Integer defaultPetMonths;
-    private Integer defaultPetAge;
-    private Integer defaultPetActionHappyMax;
+
     private Integer defaultPetActionAgeMin;
+
     private Integer defaultPetHabitatDomedCityId;
     private Integer defaultPetHabitatSanctuaryId;
     private Integer defaultPetHabitatEscapeId;

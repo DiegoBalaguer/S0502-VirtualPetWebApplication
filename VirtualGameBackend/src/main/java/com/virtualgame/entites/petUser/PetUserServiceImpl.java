@@ -1,10 +1,13 @@
 package com.virtualgame.entites.petUser;
 
 import com.virtualgame.config.properties.AppProperties;
+import com.virtualgame.entites.petAction.PetActionServiceImpl;
+import com.virtualgame.entites.petAction.dto.PetActionRespAdminDto;
 import com.virtualgame.entites.petUser.dto.*;
 import com.virtualgame.entites.petUser.mapper.PetUserCreateDtoMapper;
 import com.virtualgame.entites.petUser.mapper.PetUserRespAdminDtoMapper;
 import com.virtualgame.exception.exceptions.NotFoundException;
+import com.virtualgame.logicRules.RulesDoAction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,25 +24,30 @@ public class PetUserServiceImpl {
     private final PetUserRepository petUserRepository;
     private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
     private final PetUserCreateDtoMapper petUserCreateDtoMapper;
+    private final PetActionServiceImpl petActionServiceImpl;
+    private final RulesDoAction  rulesDoAction;
     private final AppProperties appProperties;
     private static final String NAME_OBJECT = "pet user entity";
 
     @Transactional
-    public PetUserRespAdminDto createPetUser(PetUserCreateDto createDto, Long userId) {
+    public PetUserRespAdminDto createPetUser(PetUserCreateDto createDto, Long userAuthId) {
         log.debug("Creating new {} with name: {}", NAME_OBJECT, createDto.name());
 
         PetUser pet = petUserCreateDtoMapper.toEntity(createDto);
         if (pet.getImageUrl() == null || pet.getImageUrl().isEmpty()) {
             pet.setImageUrl(appProperties.getDefaultPetUserEntityImageUrl());
         }
+        pet.setMonths(appProperties.getDefaultPetMonths());
+        pet.setAge(appProperties.getDefaultPetAge());
         pet.setHappy(appProperties.getDefaultPetHappy());
         pet.setTired(appProperties.getDefaultPetTired());
         pet.setHungry(appProperties.getDefaultPetHungry());
+        pet.setHappyReps(appProperties.getDefaultPetHappyReps());
+        pet.setTiredReps(appProperties.getDefaultPetTiredReps());
+        pet.setHungryReps(appProperties.getDefaultPetHungryReps());
         pet.setCreatedAt(LocalDateTime.now());
-        pet.setUpdatedAt(LocalDateTime.now());
-        pet.setUpdatedBy(userId);
 
-        PetUser savedEntity = saveUserPet(pet);
+        PetUser savedEntity = saveUserPet(pet,  userAuthId);
         log.info("Created {} successfully with ID: {}", NAME_OBJECT, savedEntity.getId());
 
         return petUserRespAdminDtoMapper.toDto(savedEntity);
@@ -68,57 +76,29 @@ public class PetUserServiceImpl {
     }
 
     @Transactional
-    public PetUserRespAdminDto updatePetUser(Long id, PetUserRespAdminDto petUserRespAdminDto, Long userId) {
+    public PetUserRespAdminDto updatePetUser(Long id, PetUserRespAdminDto petUserRespAdminDto, Long userAuthId) {
         log.debug("Updating {} with ID: {}", NAME_OBJECT, id);
 
         PetUser userPet = findById(id);
         petUserRespAdminDtoMapper.updateEntityFromDto(petUserRespAdminDto, userPet);
 
-        userPet.setUpdatedAt(LocalDateTime.now());
-        userPet.setUpdatedBy(userId);
-
-        PetUser updatedPet = saveUserPet(userPet);
+        PetUser updatedPet = saveUserPet(userPet,  userAuthId);
         log.info("Updated successfully {} with ID: {}", NAME_OBJECT, id);
 
         return petUserRespAdminDtoMapper.toDto(updatedPet);
     }
 
     @Transactional
-    public void softDeletePetUser(Long id, Long userId) {
+    public void softDeletePetUserByUserId(Long id, Long userAuthId) {
         log.debug("Soft deleting {} with ID: {}", NAME_OBJECT, id);
 
         PetUser userPet = findById(id);
 
         userPet.setDeletedAt(LocalDateTime.now());
-        userPet.setDeletedBy(userId);
+        userPet.setDeletedBy(userAuthId);
 
-        saveUserPet(userPet);
+        saveUserPet(userPet, userAuthId);
         log.info("Soft deleted successfully {} with ID: {}", NAME_OBJECT, id);
-    }
-
-    @Transactional
-    public void softDeletePetUserByUserId(Long userId, Long userIdAuth) {
-        log.debug("Soft deleting {} with with proprietary user ID: {}", NAME_OBJECT, userId);
-
-        List<PetUser> userPets = petUserRepository.findByUserId(userId);
-
-        userPets.forEach(pet -> {
-            pet.setDeletedAt(LocalDateTime.now());
-            pet.setDeletedBy(userIdAuth);
-        });
-
-        petUserRepository.saveAll(userPets);
-        log.info("Soft deleted successfully {} with proprietary user ID: {}", NAME_OBJECT, userId);
-    }
-
-    @Transactional
-    public void hardDeletePetUser(Long id) {
-        log.debug("Hard deleting {} with ID: {}", NAME_OBJECT, id);
-
-        findById(id);
-
-        petUserRepository.deleteById(id);
-        log.info("Hard deleted successfully {} with ID: {}", NAME_OBJECT, id);
     }
 
     @Transactional
@@ -143,7 +123,7 @@ public class PetUserServiceImpl {
     }
 
     @Transactional(readOnly = true)
-    public PetUser findById(Long id) {
+    protected PetUser findById(Long id) {
         log.debug("Finding {} by ID: {}", NAME_OBJECT, id);
         return petUserRepository.findById(id)
                 .orElseThrow(() -> {
@@ -153,8 +133,44 @@ public class PetUserServiceImpl {
     }
 
     @Transactional
-    public PetUser saveUserPet(PetUser entitySave) {
+    protected PetUser saveUserPet(PetUser entitySave, Long userAuthId) {
         log.debug("Saving {}: {}", NAME_OBJECT, entitySave);
+
+        entitySave.setUpdatedAt(LocalDateTime.now());
+        entitySave.setUpdatedBy(userAuthId);
+
         return petUserRepository.save(entitySave);
+    }
+
+    @Transactional
+    public PetUserRespAdminDto doActionPetUser(Long petUserId, Long userIdAuth, PetUserDoActionDto petUserDoActionDto) {
+        log.debug("Do action in entity {} by ID: {}", NAME_OBJECT, petUserId);
+
+        PetUserRespAdminDto findPetUserAdminDto = findPetUserById(petUserId);
+        PetActionRespAdminDto findPetActionAdminDto = petActionServiceImpl.findPetActionById(petUserDoActionDto.petActionId());
+
+        PetUserRespAdminDto modifMoodsAdminDto = rulesDoAction.doActionMoods(findPetUserAdminDto, findPetActionAdminDto);
+        PetUserRespAdminDto modifAgeAdminDto = rulesDoAction.doActionCalculateAge(modifMoodsAdminDto, findPetActionAdminDto);
+        PetUserRespAdminDto modifIsDieAdminDto = rulesDoAction.doActionCalculateIsDie(modifAgeAdminDto);
+
+        PetUserRespAdminDto savedPetUserRespAdminDto = updatePetUser(petUserId, modifIsDieAdminDto, userIdAuth);
+
+        log.debug("Save petUser for doAction {}: {}", NAME_OBJECT, savedPetUserRespAdminDto.name());
+
+
+// TODO si esta muerto lanzar incidencia
+        return savedPetUserRespAdminDto;
+    }
+
+    @Transactional
+    public PetUserRespAdminDto doMovePetUser(Long petUserId, Long userIdAuth, PetUserDoMoveDto petUserDoMoveDto) {
+        log.debug("Do action in entity {} by ID: {}", NAME_OBJECT, petUserId);
+
+        PetUser findEntity = findById(petUserId);
+
+        // TODO: gestion de que tiene que pasar en la accion
+
+        log.debug("Exit action {}: {}", NAME_OBJECT, findEntity.getName());
+        return petUserRespAdminDtoMapper.toDto(findEntity);
     }
 }

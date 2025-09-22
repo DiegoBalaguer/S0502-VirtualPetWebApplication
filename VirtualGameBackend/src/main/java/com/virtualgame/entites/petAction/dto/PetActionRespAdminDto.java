@@ -14,6 +14,19 @@ public record PetActionRespAdminDto(
         @Schema(description = "Pet's action imageUrl", example = "https://i.pravatar.cc/200?img=46")
         String imageUrl,
 
+        @Schema(description = "Pet's action happy.", example = "5")
+        Integer happy,
+        @Schema(description = "Pet's action tired.", example = "-5")
+        Integer tired,
+        @Schema(description = "Pet's action hungry.", example = "10")
+        Integer hungry,
+        @Schema(description = "Pet's action months.", example = "1")
+        Integer months,
+        @Schema(description = "Pet's action life.", example = "0")
+        Integer age,
+        @Schema(description = "Pet's action min age for action.", example = "15")
+        Integer ageMin,
+
         @Schema(description = "Date when created", example = "2025-07-15")
         LocalDateTime createdAt,
 

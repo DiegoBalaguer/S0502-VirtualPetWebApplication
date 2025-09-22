@@ -80,7 +80,7 @@ public class PetUserControllerAdmin {
     public ResponseEntity<Void> softDeletePet(
             @PathVariable Long id) {
 
-        petUserServiceImpl.softDeletePetUser(id, currentUserService.getCurrentUserId());
+        petUserServiceImpl.softDeletePetUserByUserId(id, currentUserService.getCurrentUserId());
         return ResponseEntity.noContent().build();
     }
 
@@ -91,7 +91,7 @@ public class PetUserControllerAdmin {
     })
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletePet(@PathVariable Long id) {
-        petUserServiceImpl.hardDeletePetUser(id);
+        petUserServiceImpl.hardDeletePetUserByUserId(id);
         return ResponseEntity.noContent().build();
     }
 

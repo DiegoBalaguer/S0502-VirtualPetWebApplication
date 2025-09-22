@@ -1,7 +1,7 @@
 package com.virtualgame.entites.petUser;
 
-import com.virtualgame.entites.petUser.dto.PetUserCreateDto;
-import com.virtualgame.entites.petUser.dto.PetUserRespAdminDto;
+import com.virtualgame.entites.petUser.dto.*;
+import com.virtualgame.entites.petUser.mapper.PetUserRespUserDtoMapper;
 import com.virtualgame.security.auth.CurrentUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class PetUserControllerUser {
 
     private final PetUserServiceImpl petUserServiceImpl;
     private final CurrentUserService currentUserService;
+    private final PetUserRespUserDtoMapper petUserRespUserDtoMapper;
 
     @Operation(summary = "Create a new user pet", description = "Creates a new pet in the user")
     @ApiResponses(value = {
@@ -43,17 +45,19 @@ public class PetUserControllerUser {
             @ApiResponse(responseCode = "404", description = "Pet not found")
     })
     @GetMapping("/find/{id}")
-    public ResponseEntity<PetUserRespAdminDto> findPetById(@PathVariable Long id) {
-        PetUserRespAdminDto pet = petUserServiceImpl.findPetUserById(id);
-        return ResponseEntity.ok(pet);
+    public ResponseEntity<PetUserRespUserDto> findPetById(@PathVariable Long id) {
+        PetUserRespAdminDto respAdminDto = petUserServiceImpl.findPetUserById(id);
+        return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
     }
 
     @Operation(summary = "Get all pets", description = "Retrieves all pets from the system")
     @ApiResponse(responseCode = "200", description = "List of pets retrieved")
     @GetMapping("/list")
-    public ResponseEntity<List<PetUserRespAdminDto>> findAllPets() {
-        List<PetUserRespAdminDto> pets = petUserServiceImpl.findAllPetsUser();
-        return ResponseEntity.ok(pets);
+    public ResponseEntity<List<PetUserRespUserDto>> findAllPets() {
+        List<PetUserRespAdminDto> respAdminDto = petUserServiceImpl.findAllPetsUser();
+        return ResponseEntity.ok(respAdminDto.stream()
+                .map(petUserRespUserDtoMapper::toDtoByAdminDto)
+                .collect(Collectors.toList()));
     }
 
     @Operation(summary = "Update pet", description = "Updates an existing pet")
@@ -63,12 +67,17 @@ public class PetUserControllerUser {
             @ApiResponse(responseCode = "404", description = "Pet not found")
     })
     @PutMapping("/update/{id}")
-    public ResponseEntity<PetUserRespAdminDto> updatePet(
+    public ResponseEntity<PetUserRespUserDto> updatePet(
             @PathVariable Long id,
-            @RequestBody @Valid PetUserRespAdminDto fullDto) {
+            @RequestBody @Valid PetUserRespUserDto userDto) {
 
-        PetUserRespAdminDto updatedPet = petUserServiceImpl.updatePetUser(id, fullDto, currentUserService.getCurrentUserId());
-        return ResponseEntity.ok(updatedPet);
+        PetUserRespAdminDto respAdminDto =
+                petUserServiceImpl
+                        .updatePetUser(id,
+                                petUserRespUserDtoMapper.toAdminDtoByDto(userDto),
+                                currentUserService.getCurrentUserId());
+
+        return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
     }
 
     @Operation(summary = "Soft delete pet", description = "Marks a pet as deleted (soft delete)")
@@ -80,7 +89,7 @@ public class PetUserControllerUser {
     public ResponseEntity<Void> softDeletePet(
             @PathVariable Long id) {
 
-        petUserServiceImpl.softDeletePetUser(id, currentUserService.getCurrentUserId());
+        petUserServiceImpl.softDeletePetUserByUserId(id, currentUserService.getCurrentUserId());
         return ResponseEntity.noContent().build();
     }
 
@@ -91,37 +100,43 @@ public class PetUserControllerUser {
     })
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletePet(@PathVariable Long id) {
-        petUserServiceImpl.hardDeletePetUser(id);
+        petUserServiceImpl.hardDeletePetUserByUserId(id);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Search pets by type", description = "Searches pets by type ID")
     @ApiResponse(responseCode = "200", description = "List of matching pets")
     @GetMapping("/find-by-type")
-    public ResponseEntity<List<PetUserRespAdminDto>> findPetsByType(
+    public ResponseEntity<List<PetUserRespUserDto>> findPetsByType(
             @RequestParam Long typeId) {
 
-        List<PetUserRespAdminDto> pets = petUserServiceImpl.findPetsUserByType(typeId);
-        return ResponseEntity.ok(pets);
+        List<PetUserRespAdminDto> respAdminDto = petUserServiceImpl.findPetsUserByType(typeId);
+        return ResponseEntity.ok(respAdminDto.stream()
+                .map(petUserRespUserDtoMapper::toDtoByAdminDto)
+                .collect(Collectors.toList()));
     }
 
     @Operation(summary = "Do action for pet user", description = "do action for pet user")
     @ApiResponse(responseCode = "200", description = "do action")
-    @GetMapping("/do-action")
-    public ResponseEntity<List<PetUserRespAdminDto>> doAction(
-            @RequestParam Long typeId) {
+    @PostMapping("/do-action/{petUserId}")
+    public ResponseEntity<PetUserRespUserDto> doAction(
+            @PathVariable Long petUserId,
+            @RequestBody @Valid PetUserDoActionDto doActionDto) {
 
-        List<PetUserRespAdminDto> pets = petUserServiceImpl.findPetsUserByType(typeId);
-        return ResponseEntity.ok(pets);
+        PetUserRespAdminDto respAdminDto = petUserServiceImpl
+                .doActionPetUser(petUserId, currentUserService.getCurrentUserId(), doActionDto);
+        return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
     }
 
     @Operation(summary = "Change habitat for pet user", description = "Change habitat for pet user")
     @ApiResponse(responseCode = "200", description = "Change habitat")
-    @GetMapping("/do-move")
-    public ResponseEntity<List<PetUserRespAdminDto>> doMove(
-            @RequestParam Long typeId) {
+    @PostMapping("/do-move/{petUserId}")
+    public ResponseEntity<PetUserRespUserDto> doMove(
+    @PathVariable Long petUserId,
+    @RequestBody @Valid PetUserDoMoveDto doMoveDto) {
 
-        List<PetUserRespAdminDto> pets = petUserServiceImpl.findPetsUserByType(typeId);
-        return ResponseEntity.ok(pets);
+        PetUserRespAdminDto respAdminDto = petUserServiceImpl
+                .doMovePetUser(petUserId, currentUserService.getCurrentUserId(), doMoveDto);
+        return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
     }
 }

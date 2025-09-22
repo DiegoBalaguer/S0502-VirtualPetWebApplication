@@ -36,8 +36,6 @@ public class PetAction {
     private Integer months;
     @Schema(description = "Pet's action life.", example = "0")
     private Integer age;
-    @Schema(description = "Pet's action max happy.", example = "125")
-    private Integer happyMax;
     @Schema(description = "Pet's action min age for action.", example = "15")
     private Integer ageMin;
     @Schema(description = "Date when the pet action was created.", example = "2025-07-15")

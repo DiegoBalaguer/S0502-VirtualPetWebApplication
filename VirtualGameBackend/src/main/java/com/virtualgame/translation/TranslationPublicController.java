@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/public/translations")
+@RequestMapping("/api/public/translation")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "API Manage Translations - Public Translations", description = "Public API for retrieving translations")
@@ -31,7 +31,7 @@ public class TranslationPublicController {
             @PathVariable String languageCode,
             @Parameter(description = "Message key", example = "welcome.message")
             @PathVariable String messageKey) {
-        log.debug("GET /api/public/translations/{}/{} - Getting translation", languageCode, messageKey);
+        log.debug("GET /api/public/translation/{}/{} - Getting translation", languageCode, messageKey);
         try {
             String translation = translationManagerService.getTranslation(languageCode, messageKey);
             return ResponseEntity.ok(translation);
@@ -52,7 +52,7 @@ public class TranslationPublicController {
             @PathVariable String messageKey,
             @Parameter(description = "Default value to return if translation not found", example = "Welcome")
             @RequestParam String defaultValue) {
-        log.debug("GET /api/public/translations/{}/{}/default - Getting translation with default",
+        log.debug("GET /api/public/translation/{}/{}/default - Getting translation with default",
                 languageCode, messageKey);
         String translation = translationManagerService.getTranslation(languageCode, messageKey, defaultValue);
         return ResponseEntity.ok(translation);
