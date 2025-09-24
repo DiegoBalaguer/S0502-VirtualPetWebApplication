@@ -34,7 +34,6 @@ public class PetUserControllerUser {
     @PostMapping("/create")
     public ResponseEntity<PetUserRespAdminDto> create(
             @RequestBody @Valid PetUserCreateDto createDto) {
-
         PetUserRespAdminDto createdPet = petUserServiceImpl.createPetUser(createDto, currentUserService.getCurrentUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPet);
     }
@@ -50,21 +49,12 @@ public class PetUserControllerUser {
         return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
     }
 
-    @Operation(summary = "Get all pets for user", description = "Retrieves all pets of user from the system")
-    @ApiResponse(responseCode = "200", description = "List of pets retrieved")
-    @GetMapping("/list")
-    public ResponseEntity<List<PetUserRespUserDto>> findAllPets() {
-        List<PetUserRespAdminDto> respAdminDto = petUserServiceImpl.findAllPetsUser();
-        return ResponseEntity.ok(respAdminDto.stream()
-                .map(petUserRespUserDtoMapper::toDtoByAdminDto)
-                .collect(Collectors.toList()));
-    }
-
     @Operation(summary = "Get all pets", description = "Retrieves all pets from the system")
     @ApiResponse(responseCode = "200", description = "List of pets retrieved")
-    @GetMapping("/list/{userId}")
+    @GetMapping("/list")
     public ResponseEntity<List<PetUserRespUserDto>> findPetsByUserId(@PathVariable Long userId) {
-        List<PetUserRespAdminDto> respAdminDto = petUserServiceImpl.findPetsUserByUserId(userId);
+        Long userIdnew = currentUserService.getCurrentUserId();
+        List<PetUserRespAdminDto> respAdminDto = petUserServiceImpl.findPetsUserByUserId(userIdnew);
         return ResponseEntity.ok(respAdminDto.stream()
                 .map(petUserRespUserDtoMapper::toDtoByAdminDto)
                 .collect(Collectors.toList()));

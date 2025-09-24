@@ -94,8 +94,6 @@ public class AuthenticationService implements UserDetailsService {
 
         log.info("Starting user creation for: {}", authCreateUserRequestDto.username());
 
-
-        //UserEntity userCreated = userEntityServiceImpl.createUserEntity(authCreateUserRequestDto);
         UserEntity userCreated = userServiceImpl.createUserEntity(authCreateUserRequestDto);
 
         log.debug("User created successfully with ID: {}", userCreated.getId());
