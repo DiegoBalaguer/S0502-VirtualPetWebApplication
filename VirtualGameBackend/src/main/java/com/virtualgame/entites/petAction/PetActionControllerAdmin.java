@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/action")
 @Tag(name = "API Manage Pet Action (ADMIN)", description = "Endpoints for managing pet action")
 public class PetActionControllerAdmin {
 
@@ -30,7 +30,7 @@ public class PetActionControllerAdmin {
             @ApiResponse(responseCode = "201", description = "pet action created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
-    @PostMapping("/pet-action/create")
+    @PostMapping("/create")
     public ResponseEntity<PetActionRespAdminDto> createPetAction(
             @RequestBody @Valid PetActionCreateDto createDto) {
 
@@ -43,7 +43,7 @@ public class PetActionControllerAdmin {
             @ApiResponse(responseCode = "200", description = "pet action found"),
             @ApiResponse(responseCode = "404", description = "pet action not found")
     })
-    @GetMapping("/pet-action/find/{id}")
+    @GetMapping("/find/{id}")
     public ResponseEntity<PetActionRespAdminDto> findPetActionById(@PathVariable Long id) {
         PetActionRespAdminDto petAction = petActionServiceImpl.findPetActionById(id);
         return ResponseEntity.ok(petAction);
@@ -51,7 +51,7 @@ public class PetActionControllerAdmin {
 
     @Operation(summary = "Find all pet action", description = "Retrieves all pet action from the system")
     @ApiResponse(responseCode = "200", description = "List of pet action retrieved")
-    @GetMapping("/pet-action/list")
+    @GetMapping("/list")
     public ResponseEntity<List<PetActionRespAdminDto>> findAllPetAction() {
         List<PetActionRespAdminDto> petActions = petActionServiceImpl.findAllPetAction();
         return ResponseEntity.ok(petActions);
@@ -63,7 +63,7 @@ public class PetActionControllerAdmin {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "404", description = "pet action not found")
     })
-    @PutMapping("/pet-action/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<PetActionRespAdminDto> updatePetAction(
             @PathVariable Long id,
             @RequestBody @Valid PetActionUpdateDto updateDto) {
@@ -78,7 +78,7 @@ public class PetActionControllerAdmin {
             @ApiResponse(responseCode = "404", description = "pet action not found")
     })
 
-    @PatchMapping("/pet-action/delete-soft/{id}")
+    @PatchMapping("/delete-soft/{id}")
     public ResponseEntity<Void> deleteSoftPetAction(
             @PathVariable Long id) {
 
@@ -91,7 +91,7 @@ public class PetActionControllerAdmin {
             @ApiResponse(responseCode = "204", description = "pet action deleted successfully"),
             @ApiResponse(responseCode = "404", description = "pet action not found")
     })
-    @DeleteMapping("/pet-action/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletePetAction(@PathVariable Long id) {
         petActionServiceImpl.deletePetAction(id);
         return ResponseEntity.noContent().build();

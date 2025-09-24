@@ -5,11 +5,12 @@ import com.virtualgame.entites.petAction.PetActionServiceImpl;
 import com.virtualgame.entites.petHabitat.PetHabitatServiceImpl;
 import com.virtualgame.entites.petHabitat.dto.PetHabitatRespAdminDto;
 import com.virtualgame.entites.petUser.dto.*;
+import com.virtualgame.entites.petUser.logicRules.PetUserValidations;
 import com.virtualgame.entites.petUser.mapper.PetUserCreateDtoMapper;
 import com.virtualgame.entites.petUser.mapper.PetUserRespAdminDtoMapper;
 import com.virtualgame.entites.petUser.mapper.PetUserRuleStatusDtoMapper;
 import com.virtualgame.exception.exceptions.*;
-import com.virtualgame.entites.petUser.logicRules.PetUserRulesCalculate;
+import com.virtualgame.entites.petUser.logicRules.PetUserRules;
 import com.virtualgame.translation.TranslationManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,8 @@ public class PetUserServiceImpl {
     private final PetActionServiceImpl petActionServiceImpl;
     private final PetHabitatServiceImpl petHabitatServiceImpl;
     private final PetUserRuleStatusDtoMapper petUserRuleStatusDtoMapper;
-    private final PetUserRulesCalculate petUserRulesCalculate;
+    private final PetUserValidations petUserValidations;
+    private final PetUserRules petUserRules;
     private final TranslationManagerService translate;
     private final AppProperties appProperties;
     private static final String NAME_OBJECT = "pet user entity";
@@ -74,6 +76,18 @@ public class PetUserServiceImpl {
         log.debug("Finding all {}", NAME_OBJECT);
 
         List<PetUser> pets = petUserRepository.findAll();
+        log.info("Found {} {}", pets.size(), NAME_OBJECT);
+
+        return pets.stream()
+                .map(petUserRespAdminDtoMapper::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PetUserRespAdminDto> findPetsUserByUserId(Long userId) {
+        log.debug("Finding all by userId {}", NAME_OBJECT);
+
+        List<PetUser> pets = petUserRepository.findByUserId(userId);
         log.info("Found {} {}", pets.size(), NAME_OBJECT);
 
         return pets.stream()
@@ -153,28 +167,18 @@ public class PetUserServiceImpl {
         log.debug(translate
                 .getFormatSys("Do action in entity {0} by PetUserID: {1} and petActionId {2}", NAME_OBJECT, petUserId, petActionId));
 
-        PetUserRespAdminDto findPetUserAdminDto = findPetUserById(petUserId);
-
-        if (findPetUserAdminDto.deathDate() != null) {
-            log.debug(translate
-                    .getFormatSys("PetUser dead, action cannot be performed."));
-            throw new PetUserIsDieException(translate.getFormatUsr("PetUser dead, action cannot be performed.", userIdAuth));
-        }
-
+        PetUser loadPetUser = findById(petUserId);
         PetUserRuleStatusDto ruleStatusDto = petUserRuleStatusDtoMapper
                 .toDtoFromActionDto(petActionServiceImpl.findPetActionById(petActionId));
 
-        if(findPetUserAdminDto.age() < ruleStatusDto.ageMin()) {
-            log.debug(translate
-                    .getFormatSys("PetUser is not old enough for this action."));
-            throw new PetUserAgeException(translate.getFormatUsr("PetUser is not old enough for this action.", userIdAuth));
-        }
+        PetUserValidationDto validationDto = new PetUserValidationDto(userIdAuth,
+                loadPetUser.getUserId(), loadPetUser.getDeathDate(),loadPetUser.getAge(), ruleStatusDto.ageMin(), "action");
 
-        PetUserRespAdminDto modifyMoodsAdminDto = petUserRulesCalculate.doActionMoods(findPetUserAdminDto, ruleStatusDto);
-        PetUserRespAdminDto modifyAgeAdminDto = petUserRulesCalculate.doActionCalculateAge(modifyMoodsAdminDto, ruleStatusDto);
-        PetUserRespAdminDto modifyIsDieAdminDto = petUserRulesCalculate.doActionCalculateIsDie(modifyAgeAdminDto);
+        petUserValidations.validationsPetUser(validationDto);
 
-        PetUserRespAdminDto savedPetUserRespAdminDto = updatePetUser(petUserId, modifyIsDieAdminDto, userIdAuth);
+        PetUserRespAdminDto modifyAdminDto = petUserRules.updateValues(petUserRespAdminDtoMapper.toDto(loadPetUser), ruleStatusDto);
+
+        PetUserRespAdminDto savedPetUserRespAdminDto = updatePetUser(petUserId, modifyAdminDto, userIdAuth);
 
         log.debug(translate
                 .getFormatSys("Save petUser for doAction {0}: {1}", NAME_OBJECT, savedPetUserRespAdminDto.name()));
@@ -188,32 +192,16 @@ public class PetUserServiceImpl {
                 .getFormatSys("Do move in entity {0} by PetUserID: {1} and petHabitatId {2}", NAME_OBJECT, petUserId, newPetHabitatId));
 
         PetUser loadPetUser = findById(petUserId);
-
-        if (loadPetUser.getDeathDate() != null) {
-            throw new PetUserIsDieException(translate.getFormatUsr("PetUser dead, action cannot be performed.", userIdAuth));
-        }
-
         PetHabitatRespAdminDto newHabitatDto = petHabitatServiceImpl.findPetHabitatById(newPetHabitatId);
 
-        if (loadPetUser.getPetHabitatId().equals(newPetHabitatId)) {
-            log.debug(translate
-                    .getFormatSys("PetUser already in habitat."));
-            throw new PetUserAlreadyHabitatException(translate.getFormatUsr("PetUser already in habitat.", userIdAuth));
-        }
+        PetUserValidationDto validationDto = new PetUserValidationDto(userIdAuth,
+                loadPetUser.getUserId(), loadPetUser.getDeathDate(),loadPetUser.getAge(), newHabitatDto.ageMin(), "habitat");
 
-        if (!((petHabitatServiceImpl.isInDomedCity(loadPetUser.getPetHabitatId()) && petHabitatServiceImpl.isInDomedCity(newPetHabitatId))
-                || (!petHabitatServiceImpl.isInDomedCity(loadPetUser.getPetHabitatId()) && !petHabitatServiceImpl.isInDomedCity(newPetHabitatId))))
-        {
-            log.debug(translate
-                    .getFormatSys("PetUser is prohibited from going to this habitat."));
-            throw new PetUserForbiddenHabitatException(translate.getFormatUsr("PetUser is prohibited from going to this habitat.", userIdAuth));
-        }
+        petUserValidations.validationsPetUser(validationDto);
 
-        if(loadPetUser.getAge() < newHabitatDto.ageMin()) {
-            log.debug(translate
-                    .getFormatSys("PetUser is not old enough for this Habitat."));
-            throw new PetUserAgeException(translate.getFormatUsr("PetUser is not old enough for this Habitat.", userIdAuth));
-        }
+        petUserValidations.petUserAlreadyHabitat(loadPetUser.getPetHabitatId(), newPetHabitatId, userIdAuth);
+
+        petUserValidations.petUserHabitatChangeAllowed(loadPetUser.getPetHabitatId(), newPetHabitatId,  userIdAuth);
 
         loadPetUser.setPetHabitatId(newHabitatDto.id());
 
@@ -221,11 +209,9 @@ public class PetUserServiceImpl {
 
         PetUserRuleStatusDto ruleStatusDto = petUserRuleStatusDtoMapper.toDtoFromHabitatDto(newHabitatDto);
 
-        PetUserRespAdminDto modifyMoodsAdminDto = petUserRulesCalculate.doActionMoods(findPetUserAdminDto, ruleStatusDto);
-        PetUserRespAdminDto modifyAgeAdminDto = petUserRulesCalculate.doActionCalculateAge(modifyMoodsAdminDto, ruleStatusDto);
-        PetUserRespAdminDto modifyIsDieAdminDto = petUserRulesCalculate.doActionCalculateIsDie(modifyAgeAdminDto);
+        PetUserRespAdminDto modifyAdminDto = petUserRules.updateValues(findPetUserAdminDto, ruleStatusDto);
 
-        PetUserRespAdminDto savedPetUserRespAdminDto = updatePetUser(petUserId, modifyIsDieAdminDto, userIdAuth);
+        PetUserRespAdminDto savedPetUserRespAdminDto = updatePetUser(petUserId, modifyAdminDto, userIdAuth);
 
         log.debug("Save petUser for doAction {}: {}", NAME_OBJECT, savedPetUserRespAdminDto.name());
 

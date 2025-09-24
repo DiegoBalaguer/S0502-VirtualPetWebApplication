@@ -22,32 +22,34 @@ public class PetAction {
     @Schema(description = "Pet's action identifier in the system.", example = "1001")
     private Long id;
     @Column(unique = true)
-    @Schema(description = "Pet's action name.", example = "RUN")
+    @Schema(description = "PetAction name.", example = "RUN")
     private String name;
-    @Schema(description = "Pet's action imageUrl.", example = "https://i.pravatar.cc/200?img=46")
+    @Schema(description = "PetAction imageUrl.", example = "https://i.pravatar.cc/200?img=46")
     private String imageUrl;
-    @Schema(description = "Pet's action happy.", example = "5")
+    @Schema(description = "PetAction happy.", example = "5")
     private Integer happy;
-    @Schema(description = "Pet's action tired.", example = "-5")
+    @Schema(description = "PetAction tired.", example = "-5")
     private Integer tired;
-    @Schema(description = "Pet's action hungry.", example = "10")
+    @Schema(description = "PetAction hungry.", example = "10")
     private Integer hungry;
-    @Schema(description = "Pet's action months.", example = "1")
+    @Schema(description = "PetAction months.", example = "1")
     private Integer months;
-    @Schema(description = "Pet's action life.", example = "0")
+    @Schema(description = "PetAction life.", example = "0")
     private Integer age;
-    @Schema(description = "Pet's action min age for action.", example = "15")
+    @Schema(description = "PetAction min age for action.", example = "15")
     private Integer ageMin;
-    @Schema(description = "Date when the pet action was created.", example = "2025-07-15")
+    @Schema(description = "petAction limited to this habitat.", example = "15")
+    private Integer habitatId;
+    @Schema(description = "Date when the petAction was created.", example = "2025-07-15")
     private LocalDateTime createdAt;
-    @Schema(description = "User ID that created the pet action", example = "1001")
+    @Schema(description = "User ID that created the petAction", example = "1001")
     private Long createdBy;
-    @Schema(description = "Date when the pet action was updated.", example = "2025-07-15")
+    @Schema(description = "Date when the petAction was updated.", example = "2025-07-15")
     private LocalDateTime updatedAt;
-    @Schema(description = "User ID that updated the pet action.", example = "1001")
+    @Schema(description = "User ID that updated the petAction.", example = "1001")
     private Long updatedBy;
-    @Schema(description = "Date when the pet action was deleted with soft delete.", example = "2025-07-15")
+    @Schema(description = "Date when the petAction was deleted with soft delete.", example = "2025-07-15")
     private LocalDateTime deletedAt;
-    @Schema(description = "User ID that deleted the pet action.", example = "1001")
+    @Schema(description = "User ID that deleted the petAction.", example = "1001")
     private Long deletedBy;
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/user")
 @RequiredArgsConstructor
 @Tag(name = "API Manage Users (USER)", description = "API with generic methods for admin user entities.")
 public class UserControllerUser {
@@ -28,7 +28,7 @@ public class UserControllerUser {
     @Operation(summary = "Get a basic profile userEntity by his user logged.", description = "Recover a basic profile user by user logged.")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "NOT FOUND")
-    @GetMapping("/user/find")
+    @GetMapping("/find")
     public ResponseEntity<UserRespUserDto> findUserProfile() {
         return ResponseEntity.ok(
                 userRespUserDtoMapper.toDtoByAdminDto(
@@ -38,7 +38,7 @@ public class UserControllerUser {
     @Operation(summary = "Update user by ID", description = "Update user by by ID.")
     @ApiResponse(responseCode = "204", description = "User updated successfully")
     @ApiResponse(responseCode = "404", description = "User not found")
-    @PatchMapping("/user/update")
+    @PatchMapping("/update")
     public ResponseEntity<Void> updateUserProfile(UserRespAdminDto userRespAdminDto) {
         Long userId = currentUserService.getCurrentUserId();
         userServiceImpl.updateUserEntityById(userId, userId, userRespAdminDto);
@@ -48,7 +48,7 @@ public class UserControllerUser {
     @Operation(summary = "Api for change password of user logged.", description = "Change password by user logged.")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "NOT FOUND")
-    @PatchMapping("/user/password")
+    @PatchMapping("/password")
     public ResponseEntity<Void> updatePassword(@Valid @RequestBody UserUpdatePasswordDto dto) {
         Long userId = currentUserService.getCurrentUserId();
         userServiceImpl.updatePassword(userId, userId, dto);

@@ -16,9 +16,9 @@ public class CalculateAge {
     private final AppProperties appProperties;
     private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
 
-    public PetUserRespAdminDto valueAge(PetUserRespAdminDto petUserCalcDto, int valueMonths, int valueAge) {
+    public void valueAge(PetUser petUserCalc, int valueMonths, int valueAge) {
         log.debug("Calculating Months age for pet.");
-        PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
+        //PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
 
         Integer newMonths = petUserCalc.getMonths() + valueMonths;
         if (newMonths >= appProperties.getDefaultPetMouthsToAge()) {
@@ -28,6 +28,6 @@ public class CalculateAge {
             petUserCalc.setMonths(newMonths);
         }
         petUserCalc.setAge(petUserCalc.getAge() + valueAge);
-        return petUserRespAdminDtoMapper.toDto(petUserCalc);
+        //return petUserRespAdminDtoMapper.toDto(petUserCalc);
     }
 }

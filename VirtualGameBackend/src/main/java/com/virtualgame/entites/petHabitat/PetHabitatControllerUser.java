@@ -19,29 +19,40 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
-@Tag(name = "API Manage Pet Habitat (USER)", description = "Endpoints for managing pet habitat")
+@RequestMapping("/api/user/habitat")
+@Tag(name = "API Manage PetHabitat (USER)", description = "Endpoints for managing petHabitat")
 public class PetHabitatControllerUser {
 
     private final PetHabitatServiceImpl petHabitatServiceImpl;
     private final PetHabitatRespUserDtoMapper petHabitatRespUserDtoMapper;
 
-    @Operation(summary = "Find pet habitat by ID", description = "Retrieves a specific pet habitat by its ID")
+    @Operation(summary = "Find petHabitat by ID", description = "Retrieves a specific petHabitat by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "pet habitat found"),
             @ApiResponse(responseCode = "404", description = "pet habitat not found")
     })
-    @GetMapping("/pet-habitat/find/{id}")
+    @GetMapping("/find/{id}")
     public ResponseEntity<PetHabitatRespUserDto> findPetHabitatById(@PathVariable Long id) {
         PetHabitatRespAdminDto petHabitat = petHabitatServiceImpl.findPetHabitatById(id);
         return ResponseEntity.ok(petHabitatRespUserDtoMapper.toDtoByAdminDto(petHabitat));
     }
 
-    @Operation(summary = "Find all pet habitat", description = "Retrieves all pet habitat from the system")
+    @Operation(summary = "Find all petHabitat", description = "Retrieves all petHabitat from the system")
     @ApiResponse(responseCode = "200", description = "List of pet habitat retrieved")
-    @GetMapping("/pet-habitat/list")
-    public ResponseEntity<List<PetHabitatRespUserDto>> findAllPetEntities() {
+    @GetMapping("/list")
+    public ResponseEntity<List<PetHabitatRespUserDto>> findAllPetHabitats() {
         List<PetHabitatRespAdminDto> petEntities = petHabitatServiceImpl.findAllPetHabitat();
+
+        return ResponseEntity.ok(petEntities.stream()
+                .map(petHabitatRespUserDtoMapper::toDtoByAdminDto)
+                .collect(Collectors.toList()));
+    }
+
+    @Operation(summary = "Find all petHabitat by parentId", description = "Retrieves all petHabitat by parentId from the system")
+    @ApiResponse(responseCode = "200", description = "List of pet habitat retrieved")
+    @GetMapping("/list/{parentId}")
+    public ResponseEntity<List<PetHabitatRespUserDto>> findAllPetHabitats(@PathVariable Long parentId) {
+        List<PetHabitatRespAdminDto> petEntities = petHabitatServiceImpl.findAllPetHabitatByParentId(parentId);
 
         return ResponseEntity.ok(petEntities.stream()
                 .map(petHabitatRespUserDtoMapper::toDtoByAdminDto)

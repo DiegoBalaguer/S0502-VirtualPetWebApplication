@@ -32,5 +32,4 @@ public record AuthCreateUserRequestDto(
         @NotNull(message = "Roles cannot be null")
         @Valid
         AuthCreateRoleRequestDto roleRequest) {
-
 }

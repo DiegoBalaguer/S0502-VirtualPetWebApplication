@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/action")
 @Tag(name = "API Manage Pet Action (USER)", description = "Endpoints for managing pet action")
 public class PetActionControllerUser {
 
@@ -31,7 +31,7 @@ public class PetActionControllerUser {
             @ApiResponse(responseCode = "200", description = "pet action found"),
             @ApiResponse(responseCode = "404", description = "pet action not found")
     })
-    @GetMapping("/pet-action/find/{id}")
+    @GetMapping("/find/{id}")
     public ResponseEntity<PetActionRespUserDto> findPetActionById(@PathVariable Long id) {
         PetActionRespAdminDto respAdminDto = petActionServiceImpl.findPetActionById(id);
         return ResponseEntity.ok(petActionRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
@@ -39,10 +39,24 @@ public class PetActionControllerUser {
 
     @Operation(summary = "Find all pet action", description = "Retrieves all pet action from the system")
     @ApiResponse(responseCode = "200", description = "List of pet action retrieved")
-    @GetMapping("/pet-action/list")
+    @GetMapping("/list")
     public ResponseEntity<List<PetActionRespUserDto>> findAllPetEntities() {
         List<PetActionRespAdminDto> respAdminDto = petActionServiceImpl.findAllPetAction();
 
+        return ResponseEntity.ok(respAdminDto.stream()
+                .map(petActionRespUserDtoMapper::toDtoByAdminDto)
+                .collect(Collectors.toList()));
+    }
+
+    @Operation(summary = "List petAction by habitatID", description = "Retrieves a list habitats by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "pet action found"),
+            @ApiResponse(responseCode = "404", description = "pet action not found")
+    })
+
+    @GetMapping("/list/{habitatId}")
+    public ResponseEntity<List<PetActionRespUserDto>> findPetActionByHabitatId(@PathVariable Long habitatId) {
+        List<PetActionRespAdminDto> respAdminDto = petActionServiceImpl.findPetActionByHabitatId(habitatId);
         return ResponseEntity.ok(respAdminDto.stream()
                 .map(petActionRespUserDtoMapper::toDtoByAdminDto)
                 .collect(Collectors.toList()));

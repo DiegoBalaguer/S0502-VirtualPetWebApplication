@@ -105,6 +105,21 @@ public class PetActionServiceImpl {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<PetActionRespAdminDto> findPetActionByHabitatId(long habitatId) {
+        log.debug(translate
+                .getFormatSys("Finding all {0}", NAME_OBJECT));
+
+        List<PetAction> findEntities = petActionRepository.findByHabitatId(habitatId);
+
+        log.debug(translate
+                .getFormatSys("Found {0} units in {1}", findEntities.size(), NAME_OBJECT));
+
+        return findEntities.stream()
+                .map(petActionRespAdminDtoMapper::toDto)
+                .toList();
+    }
+
     @Transactional
     public PetActionRespAdminDto updatePetAction(Long id, PetActionUpdateDto updateDto, Long userId) {
         log.debug(translate
@@ -163,4 +178,6 @@ public class PetActionServiceImpl {
                 .getFormatSys("Saved {0} successfully with ID: {1} and name: {2}", NAME_OBJECT, savedEntity.getId(), savedEntity.getName()));
         return savedEntity;
     }
+
+
 }

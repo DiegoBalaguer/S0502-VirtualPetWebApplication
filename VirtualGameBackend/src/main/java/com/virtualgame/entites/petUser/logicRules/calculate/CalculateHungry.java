@@ -18,9 +18,9 @@ public class CalculateHungry {
     private final AppProperties appProperties;
     private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
 
-    public PetUserRespAdminDto valueHungry(PetUserRespAdminDto petUserCalcDto, int valueHungry) {
+    public void valueHungry(PetUser petUserCalc, int valueHungry) {
         log.debug("Calculating Hungry.");
-        PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
+        //PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
 
         int hungryMin = appProperties.getDefaultPetHungryMin();
         int hungryMax = appProperties.getDefaultPetHungryMax();
@@ -40,6 +40,6 @@ public class CalculateHungry {
             log.debug("PetUser death for getHungryReps: {}", petUserCalc.getHungryReps());
             petUserCalc.setDeathDate(LocalDateTime.now());
         }
-        return petUserRespAdminDtoMapper.toDto(petUserCalc);
+        //return petUserRespAdminDtoMapper.toDto(petUserCalc);
     }
 }

@@ -7,6 +7,4 @@ public record AuthLoginRequestDto(
         String username,
 
         @NotBlank(message = "Password cannot be empty")
-        String password
-) {
-}
+        String password) {}

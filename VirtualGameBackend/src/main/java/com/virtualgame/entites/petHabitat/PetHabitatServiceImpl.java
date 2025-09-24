@@ -64,10 +64,23 @@ public class PetHabitatServiceImpl {
     public List<PetHabitatRespAdminDto> findAllPetHabitat() {
         log.debug("Finding all {}", NAME_OBJECT);
 
-        List<PetHabitat> petHabitat = petHabitatRepository.findAll();
-        log.info("Found {} {}", petHabitat.size(), NAME_OBJECT);
+        List<PetHabitat> petHabitatList = petHabitatRepository.findAll();
+        log.info("Found {} {}", petHabitatList.size(), NAME_OBJECT);
 
-        return petHabitat.stream()
+        return petHabitatList.stream()
+                .map(petHabitatRespAdminDtoMapper::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PetHabitatRespAdminDto> findAllPetHabitatByParentId(Long id) {
+        log.debug("Finding all by parentId {} by ID: {}", NAME_OBJECT, id);
+
+        List<PetHabitat> petHabitatList = petHabitatRepository.findAllByParentId(id);
+
+        log.info("Found {} {}", petHabitatList.size(), NAME_OBJECT);
+
+        return petHabitatList.stream()
                 .map(petHabitatRespAdminDtoMapper::toDto)
                 .toList();
     }
@@ -133,4 +146,11 @@ public class PetHabitatServiceImpl {
         PetHabitat petHabitat = findById(habitatId);
         return (petHabitat.getId().equals(domedCityId) || petHabitat.getParentId().equals(domedCityId));
     }
+
+    public boolean isInSanctuary(Long habitatId) {
+        Long sanctuaryId = appProperties.getDefaultPetHabitatSanctuaryId();
+        PetHabitat petHabitat = findById(habitatId);
+        return (petHabitat.getId().equals(sanctuaryId) || petHabitat.getParentId().equals(sanctuaryId));
+    }
+
 }

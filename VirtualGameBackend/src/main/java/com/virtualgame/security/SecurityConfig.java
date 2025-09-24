@@ -41,39 +41,35 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-      log.info("Configure Security Filter Chain for HTTP Security");
+        log.info("Configure Security Filter Chain for HTTP Security");
         return httpSecurity
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
+                    // PERMITIR OPTIONS PARA CORS PREFLIGHT
+                    http.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+
                     // Configurar los endpoints públicos
                     http.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll();
                     http.requestMatchers("/api/test/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/public/**").permitAll();
-                    http.requestMatchers(HttpMethod.POST, "/method/load").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/method/users").permitAll();
-                    http.requestMatchers("/swagger-ui/**").permitAll();
-
-                    //http.requestMatchers("/error").permitAll();
-                    //http.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+                    //http.requestMatchers(HttpMethod.POST, "/method/load").permitAll();
+                    //http.requestMatchers(HttpMethod.GET, "/method/users").permitAll();
+                    //http.requestMatchers("/swagger-ui/**").permitAll();
 
                     http.requestMatchers(SWAGGER_WHITELIST).permitAll();
 
                     // Configurar los endpoints privados
-                    // Si quisiéramos para un http especifico:
-                    //http.requestMatchers(HttpMethod.POST, "/api/admin/**").hasAnyRole("ADMIN", "DEVELOPER");
-                    // para http genérico
-                    //http.requestMatchers(HttpMethod.POST, "/method/post").hasAnyRole("ADMIN", "DEVELOPER");
-                    http.requestMatchers(HttpMethod.PATCH, "/method/patch").hasAnyAuthority("REFACTOR");
-                    http.requestMatchers(HttpMethod.GET, "/method/get").hasAnyRole ("ADMIN");
-                    //http.requestMatchers(HttpMethod.GET, "/method/get").hasAnyAuthority("READ");
+                    //http.requestMatchers(HttpMethod.PATCH, "/method/patch").hasAnyAuthority("REFACTOR");
+                    //http.requestMatchers(HttpMethod.GET, "/method/get").hasAnyRole ("ADMIN");
 
                     http.requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "DEVELOPER");
                     http.requestMatchers("/api/user/**").hasAnyRole("ADMIN", "DEVELOPER", "USER");
 
-                    // Configurar el resto de endpoint - NO ESPECIFICADOS
-                    http.anyRequest().denyAll();
+                    // CAMBIAR de denyAll() a authenticated() para el resto
+                    http.anyRequest().authenticated();
                 })
                 .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
                 .build();

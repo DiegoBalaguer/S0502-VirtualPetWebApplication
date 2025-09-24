@@ -16,11 +16,10 @@ import java.time.LocalDateTime;
 public class CalculateHappy {
 
     private final AppProperties appProperties;
-    private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
 
-    public PetUserRespAdminDto valueHappy(PetUserRespAdminDto petUserCalcDto, int valueHappy) {
+    public void valueHappy(PetUser petUserCalc, int valueHappy) {
         log.debug("Calculating happy.");
-        PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
+        //PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
 
         int happyMin = appProperties.getDefaultPetHappyMin();
         int happyMax = appProperties.getDefaultPetHappyMax();
@@ -41,6 +40,7 @@ public class CalculateHappy {
             log.debug("PetUser death for getHappyReps: {}", petUserCalc.getHappyReps());
             petUserCalc.setDeathDate(LocalDateTime.now());
         }
-        return petUserRespAdminDtoMapper.toDto(petUserCalc);
+        //return petUserRespAdminDtoMapper.toDto(petUserCalc);
+        //return petUserCalc;
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/pets-users")
+@RequestMapping("/api/admin/petsuser")
 @Tag(name = "API Manage Pets User (ADMIN)", description = "Endpoints for managing user pets")
 public class PetUserControllerAdmin {
 

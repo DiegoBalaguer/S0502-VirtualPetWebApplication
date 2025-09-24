@@ -24,9 +24,9 @@ public class CalculateIsDie {
     private final PetHabitatRespAdminDtoMapper petHabitatRespAdminDtoMapper;
     private final PetHabitatServiceImpl petHabitatServiceImpl;
 
-    public PetUserRespAdminDto valueIsDie(PetUserRespAdminDto petUserCalcDto) {
+    public void valueIsDie(PetUser petUserCalc) {
         log.debug("Calculating is die.");
-        PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
+        //PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
 
         PetHabitat petHabitat = petHabitatRespAdminDtoMapper.toEntity(
                 petHabitatServiceImpl.findPetHabitatById(petUserCalc.getPetHabitatId()));
@@ -45,7 +45,7 @@ public class CalculateIsDie {
               petUserCalc.setPetHabitatId(appProperties.getDefaultPetHabitatCementerId());
           }
         }
-        return petUserRespAdminDtoMapper.toDto(petUserCalc);
+        //return petUserRespAdminDtoMapper.toDto(petUserCalc);
     }
 
     private int randomAge(int num_min, int num_max) {

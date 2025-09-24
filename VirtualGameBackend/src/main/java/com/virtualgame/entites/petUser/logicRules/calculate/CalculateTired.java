@@ -18,9 +18,9 @@ public class CalculateTired {
     private final AppProperties appProperties;
     private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
 
-    public PetUserRespAdminDto valueTired(PetUserRespAdminDto petUserCalcDto, int valueTired) {
+    public void valueTired(PetUser petUserCalc, int valueTired) {
         log.debug("Calculating Tired.");
-        PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
+        //PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
 
         int tiredMin = appProperties.getDefaultPetTiredMin();
         int tiredMax = appProperties.getDefaultPetTiredMax();
@@ -40,6 +40,6 @@ public class CalculateTired {
             log.debug("PetUser death for getTiredReps: {}", petUserCalc.getTiredReps());
             petUserCalc.setDeathDate(LocalDateTime.now());
         }
-        return petUserRespAdminDtoMapper.toDto(petUserCalc);
+        //return petUserRespAdminDtoMapper.toDto(petUserCalc);
     }
 }

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/pet")
 @Tag(name = "API Manage Pet Entity (USER)", description = "Endpoints for managing pet entity")
 public class PetControllerUser {
 
@@ -28,7 +28,7 @@ public class PetControllerUser {
             @ApiResponse(responseCode = "200", description = "pet entity found"),
             @ApiResponse(responseCode = "404", description = "pet entity not found")
     })
-    @GetMapping("/pet-entity/find/{id}")
+    @GetMapping("/find/{id}")
     public ResponseEntity<PetRespUserDto> findPetEntityById(@PathVariable Long id) {
         PetRespAdminDto petEntity = petServiceImpl.findPetEntityById(id);
         return ResponseEntity.ok(petRespUserDtoMapper.toDtoByAdminDto(petEntity));
@@ -36,7 +36,7 @@ public class PetControllerUser {
 
     @Operation(summary = "Find all pet entity", description = "Retrieves all pet entity from the system")
     @ApiResponse(responseCode = "200", description = "List of pet entity retrieved")
-    @GetMapping("/pet-entity/list")
+    @GetMapping("/list")
     public ResponseEntity<List<PetRespUserDto>> findAllPetEntities() {
         List<PetRespAdminDto> petEntities = petServiceImpl.findAllPetEntity();
 

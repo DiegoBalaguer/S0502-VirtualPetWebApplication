@@ -8,4 +8,8 @@ import java.util.List;
 @Repository
 public interface PetActionRepository extends JpaRepository<PetAction, Long> {
     Boolean existsByName(String name);
+    List<PetAction> findByHabitatId(Long habitatId);
+
+
+
 }
