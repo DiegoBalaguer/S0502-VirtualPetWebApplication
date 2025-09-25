@@ -12,7 +12,7 @@ public interface UserUpdateUserDtoMapper {
 
     UserEntity toEntity(UserUpdateUserDto dto);
 
-    UserUpdateUserDto toBasicDto(UserEntity entity);
+    UserUpdateUserDto toDto(UserEntity entity);
 
-    UserUpdateUserDto toBasicFromFullDto(UserUpdateAdminDto dto);
+    UserUpdateUserDto toDtoFromUpdateAdminDto(UserUpdateAdminDto dto);
 }

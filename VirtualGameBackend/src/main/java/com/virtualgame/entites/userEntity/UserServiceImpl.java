@@ -4,10 +4,10 @@ import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.userEntity.mapper.UserRespAdminDtoMapper;
 import com.virtualgame.entites.userEntity.mapper.UserListAdminDtoMapper;
 import com.virtualgame.entites.userEntity.mapper.UserUpdateAdminDtoMapper;
-import com.virtualgame.security.roleEntity.RoleEntity;
-import com.virtualgame.security.roleEntity.RoleServiceImpl;
-import com.virtualgame.security.auth.dto.AuthCreateUserRequestDto;
-import com.virtualgame.security.auth.dto.AuthCreateUserRequestDtoMapper;
+import com.virtualgame.security.user.roleEntity.RoleEntity;
+import com.virtualgame.security.user.roleEntity.RoleServiceImpl;
+import com.virtualgame.security.user.auth.dto.AuthCreateUserRequestDto;
+import com.virtualgame.security.user.auth.dto.AuthCreateUserRequestDtoMapper;
 import com.virtualgame.entites.userEntity.dto.*;
 import com.virtualgame.entites.petUser.PetUserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -104,11 +104,11 @@ public class UserServiceImpl {
     }
 
     @Transactional
-    public UserRespAdminDto updateUserEntityById(Long userId, Long userIdAuth, UserRespAdminDto userRespAdminDto) {
+    public UserUpdateAdminDto updateUserEntityById(Long userId, Long userIdAuth, UserUpdateAdminDto userUpdateAdminDto) {
         log.debug("Updating {} with ID: {}", NAME_OBJECT, userId);
 
         UserEntity userUpdate = findById(userId);
-        userUpdateAdminDtoMapper.forUpdateEntityFromDto(userRespAdminDto, userUpdate);
+        userUpdateAdminDtoMapper.forUpdateEntityFromDto(userUpdateAdminDto, userUpdate);
 
         userUpdate.setUpdatedAt(LocalDateTime.now());
         userUpdate.setUpdatedBy(userIdAuth);
@@ -116,7 +116,7 @@ public class UserServiceImpl {
         UserEntity updateUserEntity = saveUserEntity(userUpdate);
         log.info("Updated successfully {} with ID: {}", NAME_OBJECT, userId);
 
-        return userUpdateAdminDtoMapper.toUpdateFullDto(updateUserEntity);
+        return userUpdateAdminDtoMapper.toDto(updateUserEntity);
     }
 
     @Transactional

@@ -1,4 +1,4 @@
-package com.virtualgame.security.auth.dto;
+package com.virtualgame.security.user.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

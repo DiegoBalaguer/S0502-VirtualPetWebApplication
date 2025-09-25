@@ -1,4 +1,4 @@
-package com.virtualgame.security.permissionEntity;
+package com.virtualgame.security.user.permissionEntity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;

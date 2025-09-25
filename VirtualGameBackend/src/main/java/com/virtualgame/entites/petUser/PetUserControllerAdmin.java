@@ -1,7 +1,7 @@
 package com.virtualgame.entites.petUser;
 
 import com.virtualgame.entites.petUser.dto.PetUserRespAdminDto;
-import com.virtualgame.security.auth.CurrentUserService;
+import com.virtualgame.security.user.auth.CurrentUserService;
 import com.virtualgame.entites.petUser.dto.PetUserCreateDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

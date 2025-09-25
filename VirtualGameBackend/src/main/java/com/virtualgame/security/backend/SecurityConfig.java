@@ -1,6 +1,8 @@
-package com.virtualgame.security;
+package com.virtualgame.security.backend;
 
-import com.virtualgame.security.auth.AuthenticationService;
+import com.virtualgame.security.user.JwtTokenValidator;
+import com.virtualgame.security.user.JwtUtils;
+import com.virtualgame.security.user.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

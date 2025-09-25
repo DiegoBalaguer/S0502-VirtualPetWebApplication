@@ -2,8 +2,9 @@ package com.virtualgame.entites.userEntity;
 
 import com.virtualgame.entites.userEntity.dto.UserListAdminDto;
 import com.virtualgame.entites.userEntity.dto.UserRespAdminDto;
+import com.virtualgame.entites.userEntity.dto.UserUpdateAdminDto;
 import com.virtualgame.entites.userEntity.dto.UserUpdatePasswordDto;
-import com.virtualgame.security.auth.CurrentUserService;
+import com.virtualgame.security.user.auth.CurrentUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,8 +66,8 @@ public class UserControllerAdmin {
     @Operation(summary = "Update user by ID", description = "Update user by by ID.")
     @ApiResponse(responseCode = "204", description = "User updated successfully")
     @ApiResponse(responseCode = "404", description = "User not found")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Void> updateUserEntityById(
+    @PutMapping("/update/{updateUserId}")
+    public ResponseEntity<UserUpdateAdminDto> updateUserEntityById(
             @Parameter(
                     name = "id",
                     description = "ID of the user to update",
@@ -80,10 +81,9 @@ public class UserControllerAdmin {
                             description = "User identifier must be a positive integer"
                     )
             )
-            @PathVariable Long id, @Valid @RequestBody UserRespAdminDto userRespAdminDto) {
-
-        userServiceImpl.updateUserEntityById(id, currentUserService.getCurrentUserId(), userRespAdminDto);
-        return ResponseEntity.noContent().build();
+            @PathVariable Long updateUserId, @Valid @RequestBody UserUpdateAdminDto userUpdateAdminDto) {
+        return ResponseEntity.ok(
+                userServiceImpl.updateUserEntityById(updateUserId, currentUserService.getCurrentUserId(), userUpdateAdminDto));
     }
 
     @Operation(summary = "Soft delete a user by ID", description = "Soft delete a user by ID.")

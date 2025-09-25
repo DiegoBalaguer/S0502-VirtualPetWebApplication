@@ -3,7 +3,7 @@ package com.virtualgame.entites.petAction;
 import com.virtualgame.entites.petAction.dto.PetActionCreateDto;
 import com.virtualgame.entites.petAction.dto.PetActionRespAdminDto;
 import com.virtualgame.entites.petAction.dto.PetActionUpdateDto;
-import com.virtualgame.security.auth.CurrentUserService;
+import com.virtualgame.security.user.auth.CurrentUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,15 +19,15 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/action")
-@Tag(name = "API Manage Pet Action (ADMIN)", description = "Endpoints for managing pet action")
+@Tag(name = "API Manage PetAction (ADMIN)", description = "Endpoints for managing petAction")
 public class PetActionControllerAdmin {
 
     private final PetActionServiceImpl petActionServiceImpl;
     private final CurrentUserService currentUserService;
 
-    @Operation(summary = "Create a new pet action", description = "Creates a new pet action in the system")
+    @Operation(summary = "Create a new petAction", description = "Creates a new petAction in the system")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "pet action created successfully"),
+            @ApiResponse(responseCode = "201", description = "petAction created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PostMapping("/create")
@@ -38,10 +38,10 @@ public class PetActionControllerAdmin {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPetAction);
     }
 
-    @Operation(summary = "Find pet action by ID", description = "Retrieves a specific pet action by its ID")
+    @Operation(summary = "Find petAction by ID", description = "Retrieves a specific petAction by its ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "pet action found"),
-            @ApiResponse(responseCode = "404", description = "pet action not found")
+            @ApiResponse(responseCode = "200", description = "petAction found"),
+            @ApiResponse(responseCode = "404", description = "petAction not found")
     })
     @GetMapping("/find/{id}")
     public ResponseEntity<PetActionRespAdminDto> findPetActionById(@PathVariable Long id) {
@@ -49,19 +49,19 @@ public class PetActionControllerAdmin {
         return ResponseEntity.ok(petAction);
     }
 
-    @Operation(summary = "Find all pet action", description = "Retrieves all pet action from the system")
-    @ApiResponse(responseCode = "200", description = "List of pet action retrieved")
+    @Operation(summary = "Find all petAction", description = "Retrieves all petAction from the system")
+    @ApiResponse(responseCode = "200", description = "List of petAction retrieved")
     @GetMapping("/list")
     public ResponseEntity<List<PetActionRespAdminDto>> findAllPetAction() {
         List<PetActionRespAdminDto> petActions = petActionServiceImpl.findAllPetAction();
         return ResponseEntity.ok(petActions);
     }
 
-    @Operation(summary = "Update pet action", description = "Updates an existing pet action")
+    @Operation(summary = "Update petAction", description = "Updates an existing petAction")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "pet action updated successfully"),
+            @ApiResponse(responseCode = "200", description = "petAction updated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "404", description = "pet action not found")
+            @ApiResponse(responseCode = "404", description = "petAction not found")
     })
     @PutMapping("/update/{id}")
     public ResponseEntity<PetActionRespAdminDto> updatePetAction(
@@ -72,10 +72,10 @@ public class PetActionControllerAdmin {
         return ResponseEntity.ok(updatedPetAction);
     }
 
-    @Operation(summary = "Soft delete pet action", description = "Marks a pet action as deleted (soft delete)")
+    @Operation(summary = "Soft delete petAction", description = "Marks a petAction as deleted (soft delete)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "pet action soft deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "pet action not found")
+            @ApiResponse(responseCode = "204", description = "petAction soft deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "petAction not found")
     })
 
     @PatchMapping("/delete-soft/{id}")
@@ -86,10 +86,10 @@ public class PetActionControllerAdmin {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Hard delete pet action", description = "Permanently deletes a pet action from the system")
+    @Operation(summary = "Hard delete petAction", description = "Permanently deletes a petAction from the system")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "pet action deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "pet action not found")
+            @ApiResponse(responseCode = "204", description = "petAction deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "petAction not found")
     })
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletePetAction(@PathVariable Long id) {

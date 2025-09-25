@@ -2,7 +2,7 @@ package com.virtualgame.entites.petUser;
 
 import com.virtualgame.entites.petUser.dto.*;
 import com.virtualgame.entites.petUser.mapper.PetUserRespUserDtoMapper;
-import com.virtualgame.security.auth.CurrentUserService;
+import com.virtualgame.security.user.auth.CurrentUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -49,12 +49,12 @@ public class PetUserControllerUser {
         return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
     }
 
-    @Operation(summary = "Get all pets", description = "Retrieves all pets from the system")
+    @Operation(summary = "Get all pets", description = "Retrieves all petsUser by user from the system")
     @ApiResponse(responseCode = "200", description = "List of pets retrieved")
     @GetMapping("/list")
-    public ResponseEntity<List<PetUserRespUserDto>> findPetsByUserId(@PathVariable Long userId) {
-        Long userIdnew = currentUserService.getCurrentUserId();
-        List<PetUserRespAdminDto> respAdminDto = petUserServiceImpl.findPetsUserByUserId(userIdnew);
+    public ResponseEntity<List<PetUserRespUserDto>> findPetsByUserId() {
+        Long userId = currentUserService.getCurrentUserId();
+        List<PetUserRespAdminDto> respAdminDto = petUserServiceImpl.findPetsUserByUserId(userId);
         return ResponseEntity.ok(respAdminDto.stream()
                 .map(petUserRespUserDtoMapper::toDtoByAdminDto)
                 .collect(Collectors.toList()));

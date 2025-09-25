@@ -45,6 +45,8 @@ public class PetUserServiceImpl {
         if (pet.getImageUrl() == null || pet.getImageUrl().isEmpty()) {
             pet.setImageUrl(appProperties.getDefaultPetUserEntityImageUrl());
         }
+        pet.setUserId(userAuthId);
+        pet.setPetHabitatId(appProperties.getDefaultPetHabitatCreatePetUser());
         pet.setMonths(appProperties.getDefaultPetMonths());
         pet.setAge(appProperties.getDefaultPetAge());
         pet.setHappy(appProperties.getDefaultPetHappy());
@@ -54,6 +56,7 @@ public class PetUserServiceImpl {
         pet.setTiredReps(appProperties.getDefaultPetTiredReps());
         pet.setHungryReps(appProperties.getDefaultPetHungryReps());
         pet.setCreatedAt(LocalDateTime.now());
+        pet.setCreatedBy(userAuthId);
 
         PetUser savedEntity = saveUserPet(pet, userAuthId);
         log.info("Created {} successfully with ID: {}", NAME_OBJECT, savedEntity.getId());
@@ -85,7 +88,7 @@ public class PetUserServiceImpl {
 
     @Transactional(readOnly = true)
     public List<PetUserRespAdminDto> findPetsUserByUserId(Long userId) {
-        log.debug("Finding all by userId {}", NAME_OBJECT);
+        log.debug("Finding all by userId {}, userId: {}", NAME_OBJECT, userId);
 
         List<PetUser> pets = petUserRepository.findByUserId(userId);
         log.info("Found {} {}", pets.size(), NAME_OBJECT);

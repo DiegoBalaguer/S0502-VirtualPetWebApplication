@@ -2,6 +2,8 @@ package com.virtualgame.entites.userEntity.mapper;
 
 import com.virtualgame.entites.userEntity.UserEntity;
 import com.virtualgame.entites.userEntity.dto.UserRespAdminDto;
+import com.virtualgame.entites.userEntity.dto.UserUpdateAdminDto;
+import com.virtualgame.entites.userEntity.dto.UserUpdateUserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -10,10 +12,12 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserUpdateAdminDtoMapper {
 
-    void forUpdateEntityFromDto(UserRespAdminDto dto, @MappingTarget UserEntity entity);
+    void forUpdateEntityFromDto(UserUpdateAdminDto dto, @MappingTarget UserEntity entity);
 
-    UserEntity toUpdateEntity(UserRespAdminDto dto);
+    UserEntity toEntity(UserUpdateAdminDto dto);
 
-    UserRespAdminDto toUpdateFullDto(UserEntity entity);
+    UserUpdateAdminDto toDto(UserEntity entity);
+
+    UserUpdateAdminDto  toDtoFromUpdateUserDto(UserUpdateUserDto updateUserDto);
 }
 

@@ -1,4 +1,4 @@
-package com.virtualgame.security.roleEntity;
+package com.virtualgame.security.user.roleEntity;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

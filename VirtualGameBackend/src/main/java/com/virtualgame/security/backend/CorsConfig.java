@@ -1,4 +1,4 @@
-package com.virtualgame.security;
+package com.virtualgame.security.backend;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

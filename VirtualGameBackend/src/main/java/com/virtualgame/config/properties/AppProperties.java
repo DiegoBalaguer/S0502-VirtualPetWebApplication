@@ -24,6 +24,7 @@ public class AppProperties {
     private String defaultPetActionImageUrl;
     private String defaultPetEntityImageUrl;
     private String defaultPetHabitatImageUrl;
+    private String defaultPetTypeImageUrl;
     private String defaultPetUserEntityImageUrl;
 
     private Integer defaultPetAgeDieDomedCity;
@@ -62,6 +63,7 @@ public class AppProperties {
     private Long defaultPetHabitatCarrouselId;
     private Long defaultPetHabitatCementerId;
     private Long defaultPetHabitatEscapeId;
+    private Long defaultPetHabitatCreatePetUser;
 
 
 

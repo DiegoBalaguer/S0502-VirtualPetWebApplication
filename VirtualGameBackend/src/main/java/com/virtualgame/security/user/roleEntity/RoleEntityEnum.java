@@ -1,4 +1,4 @@
-package com.virtualgame.security.roleEntity;
+package com.virtualgame.security.user.roleEntity;
 
 public enum RoleEntityEnum {
     ADMIN,

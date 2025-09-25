@@ -3,8 +3,7 @@ package com.virtualgame.entites.userEntity.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record UserUpdateUserDto(
-        @Schema(description = "User's identifier in the system.", example = "1001")
-        Long id,
+
         @Schema(description = "User's username.", example = "Manuel")
         String username,
         @Schema(description = "User's email.", example = "user@correo.me")

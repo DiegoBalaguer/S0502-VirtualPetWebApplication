@@ -26,7 +26,7 @@ public class PetActionServiceImpl {
     private final PetActionUpdateAdminDtoMapper petActionUpdateAdminDtoMapper;
     private final TranslationManagerService translate;
     private final AppProperties appPrp;
-    private static final String NAME_OBJECT = "pet action";
+    private static final String NAME_OBJECT = "petAction";
 
     @Transactional
     public PetActionRespAdminDto createPetAction(PetActionCreateDto createDto, Long userId) {
@@ -110,7 +110,7 @@ public class PetActionServiceImpl {
         log.debug(translate
                 .getFormatSys("Finding all {0}", NAME_OBJECT));
 
-        List<PetAction> findEntities = petActionRepository.findByHabitatId(habitatId);
+        List<PetAction> findEntities = petActionRepository.findByHabitatIdOrHabitatIsNull(habitatId);
 
         log.debug(translate
                 .getFormatSys("Found {0} units in {1}", findEntities.size(), NAME_OBJECT));

@@ -1,4 +1,4 @@
-package com.virtualgame.security;
+package com.virtualgame.security.user;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

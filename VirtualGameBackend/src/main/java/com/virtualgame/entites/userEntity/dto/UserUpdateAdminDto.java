@@ -5,8 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 public record UserUpdateAdminDto(
-        @Schema(description = "User's identifier in the system.", example = "1001")
-        Long id,
         @Schema(description = "User's username.", example = "Manuel")
         String username,
         @Schema(description = "User's email.", example = "user@correo.me")

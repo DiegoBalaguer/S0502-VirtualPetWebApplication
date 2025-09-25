@@ -6,17 +6,13 @@ import jakarta.validation.constraints.NotNull;
 
 public record PetUserCreateDto(
         @NotBlank(message = "Name is required")
-        @Schema(description = "Pet User name", example = "Esther")
+        @Schema(description = "PetUser name", example = "Mi Mascota")
         String name,
 
-        @NotNull(message = "Pet type is required")
-        @Schema(description = "Pet user type ID", example = "1")
+        @NotNull(message = "PetType is required")
+        @Schema(description = "PetUser petTypeID", example = "1")
         Long petTypeId,
 
-        @NotNull(message = "User entity proprietary userPetEntity is required")
-        @Schema(description = "User user's PetEntity proprietary ID", example = "1")
-        Long userId,
-
-        @Schema(description = "Pet user's imageUrl", example = "https://i.pravatar.cc/200?img=46")
+        @Schema(description = "PetUser imageUrl", example = "https://i.pravatar.cc/200?img=46")
         String imageUrl
 ) {}

@@ -1,7 +1,7 @@
-package com.virtualgame.security.roleEntity;
+package com.virtualgame.security.user.roleEntity;
 
 
-import com.virtualgame.security.permissionEntity.PermissionEntity;
+import com.virtualgame.security.user.permissionEntity.PermissionEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;

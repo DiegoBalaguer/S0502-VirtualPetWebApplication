@@ -1,6 +1,6 @@
 package com.virtualgame.translation.languageEntity;
 
-import com.virtualgame.security.auth.CurrentUserService;
+import com.virtualgame.security.user.auth.CurrentUserService;
 import com.virtualgame.translation.languageEntity.dto.LanguageCreateDto;
 import com.virtualgame.translation.languageEntity.dto.LanguageDto;
 import com.virtualgame.translation.languageEntity.dto.LanguageUpdateDto;

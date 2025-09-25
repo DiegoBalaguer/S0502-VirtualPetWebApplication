@@ -3,7 +3,7 @@ package com.virtualgame.config.configApp;
 import com.virtualgame.config.configApp.dto.AppConfigurationCreateDto;
 import com.virtualgame.config.configApp.dto.AppConfigurationRespAdminDto;
 import com.virtualgame.config.configApp.dto.AppConfigurationUpdateDto;
-import com.virtualgame.security.auth.CurrentUserService;
+import com.virtualgame.security.user.auth.CurrentUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

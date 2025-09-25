@@ -1,10 +1,10 @@
-package com.virtualgame.security.auth;
+package com.virtualgame.security.user.auth;
 
 import com.virtualgame.entites.userEntity.UserServiceImpl;
-import com.virtualgame.security.auth.dto.AuthCreateUserRequestDto;
-import com.virtualgame.security.auth.dto.AuthLoginRequestDto;
-import com.virtualgame.security.auth.dto.AuthResponseDto;
-import com.virtualgame.security.JwtUtils;
+import com.virtualgame.security.user.auth.dto.AuthCreateUserRequestDto;
+import com.virtualgame.security.user.auth.dto.AuthLoginRequestDto;
+import com.virtualgame.security.user.auth.dto.AuthResponseDto;
+import com.virtualgame.security.user.JwtUtils;
 import com.virtualgame.entites.userEntity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

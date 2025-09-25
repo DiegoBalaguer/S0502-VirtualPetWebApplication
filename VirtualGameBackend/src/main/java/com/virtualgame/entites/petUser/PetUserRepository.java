@@ -15,6 +15,7 @@ public interface PetUserRepository extends JpaRepository<PetUser, Long> {
 
     List<PetUser> findByPetTypeId(Long petTypeId);
 
+    @Query("SELECT p FROM PetUser p WHERE p.userId = :userId")
     List<PetUser> findByUserId(Long userId);
 
     @Query("SELECT p FROM PetUser p WHERE p.deletedAt IS NULL")

@@ -3,7 +3,7 @@ package com.virtualgame.entites.petHabitat;
 import com.virtualgame.entites.petHabitat.dto.PetHabitatCreateDto;
 import com.virtualgame.entites.petHabitat.dto.PetHabitatRespAdminDto;
 import com.virtualgame.entites.petHabitat.dto.PetHabitatUpdateDto;
-import com.virtualgame.security.auth.CurrentUserService;
+import com.virtualgame.security.user.auth.CurrentUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

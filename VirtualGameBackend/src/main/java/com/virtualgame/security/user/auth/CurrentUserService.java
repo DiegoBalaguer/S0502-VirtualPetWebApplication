@@ -1,4 +1,4 @@
-package com.virtualgame.security.auth;
+package com.virtualgame.security.user.auth;
 
 import com.virtualgame.entites.userEntity.UserEntity;
 import com.virtualgame.entites.userEntity.UserServiceImpl;

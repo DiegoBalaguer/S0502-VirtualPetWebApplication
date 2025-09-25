@@ -1,8 +1,8 @@
-package com.virtualgame.security.auth;
+package com.virtualgame.security.user.auth;
 
-import com.virtualgame.security.auth.dto.AuthCreateUserRequestDto;
-import com.virtualgame.security.auth.dto.AuthLoginRequestDto;
-import com.virtualgame.security.auth.dto.AuthResponseDto;
+import com.virtualgame.security.user.auth.dto.AuthCreateUserRequestDto;
+import com.virtualgame.security.user.auth.dto.AuthLoginRequestDto;
+import com.virtualgame.security.user.auth.dto.AuthResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

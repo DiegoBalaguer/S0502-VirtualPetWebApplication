@@ -20,16 +20,16 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user/action")
-@Tag(name = "API Manage Pet Action (USER)", description = "Endpoints for managing pet action")
+@Tag(name = "API Manage PetAction (USER)", description = "Endpoints for managing petAction")
 public class PetActionControllerUser {
 
     private final PetActionServiceImpl petActionServiceImpl;
     private final PetActionRespUserDtoMapper petActionRespUserDtoMapper;
 
-    @Operation(summary = "Find pet action by ID", description = "Retrieves a specific pet action by its ID")
+    @Operation(summary = "Find petAction by ID", description = "Retrieves a specific petAction by its ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "pet action found"),
-            @ApiResponse(responseCode = "404", description = "pet action not found")
+            @ApiResponse(responseCode = "200", description = "petAction found"),
+            @ApiResponse(responseCode = "404", description = "petAction not found")
     })
     @GetMapping("/find/{id}")
     public ResponseEntity<PetActionRespUserDto> findPetActionById(@PathVariable Long id) {
@@ -37,8 +37,8 @@ public class PetActionControllerUser {
         return ResponseEntity.ok(petActionRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
     }
 
-    @Operation(summary = "Find all pet action", description = "Retrieves all pet action from the system")
-    @ApiResponse(responseCode = "200", description = "List of pet action retrieved")
+    @Operation(summary = "Find all petAction", description = "Retrieves all petAction from the system")
+    @ApiResponse(responseCode = "200", description = "List of petAction retrieved")
     @GetMapping("/list")
     public ResponseEntity<List<PetActionRespUserDto>> findAllPetEntities() {
         List<PetActionRespAdminDto> respAdminDto = petActionServiceImpl.findAllPetAction();
@@ -50,10 +50,9 @@ public class PetActionControllerUser {
 
     @Operation(summary = "List petAction by habitatID", description = "Retrieves a list habitats by its ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "pet action found"),
-            @ApiResponse(responseCode = "404", description = "pet action not found")
+            @ApiResponse(responseCode = "200", description = "petAction found"),
+            @ApiResponse(responseCode = "404", description = "petAction not found")
     })
-
     @GetMapping("/list/{habitatId}")
     public ResponseEntity<List<PetActionRespUserDto>> findPetActionByHabitatId(@PathVariable Long habitatId) {
         List<PetActionRespAdminDto> respAdminDto = petActionServiceImpl.findPetActionByHabitatId(habitatId);

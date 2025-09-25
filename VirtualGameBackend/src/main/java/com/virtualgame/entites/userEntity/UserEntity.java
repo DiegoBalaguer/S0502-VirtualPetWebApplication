@@ -1,6 +1,6 @@
 package com.virtualgame.entites.userEntity;
 
-import com.virtualgame.security.roleEntity.RoleEntity;
+import com.virtualgame.security.user.roleEntity.RoleEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
