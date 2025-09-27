@@ -10,7 +10,9 @@ import java.util.Set;
 
 @Repository
 public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
+
     List<RoleEntity> findRoleEntitiesByRoleEntityEnumIn(List<String> roleNames);
+
 
     // consulta para obtener los nombres de los roles
     @Query("SELECT r FROM RoleEntity r WHERE r.roleEntityEnum IN :roleNames")

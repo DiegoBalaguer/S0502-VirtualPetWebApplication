@@ -6,12 +6,14 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.virtualgame.security.user.auth.SecurityUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,29 +24,41 @@ public class JwtUtils {
     @Value("${security.jwt.key.private}")
     private String privateKey;
 
+    @Value("${security.jwt.expiration-ms:86400000}")
+    private long jwtExpiration;
+
     @Value("${security.jwt.user.generator}")
     private String userGenerator;
 
 
-    public String createToken(Authentication authentication) {
+    public String createToken(Authentication authentication, Long userId, String name) {
         Algorithm algorithm = Algorithm.HMAC256(privateKey);
         String username = authentication.getPrincipal().toString();
-        String authorities =  authentication.getAuthorities()
-                .stream()
+
+        // authorities → lista de strings
+        List<String> roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+                .collect(Collectors.toList());
 
-        String jwtToken = JWT.create()
+        Object principal = authentication.getPrincipal();
+        String email;
+        if (principal instanceof SecurityUser su) {
+            email = su.getEmail();
+        } else {
+            email = principal.toString();
+        }
+
+        return JWT.create()
                 .withIssuer(userGenerator)
-                .withSubject(username)
-                .withClaim("authorities", authorities)
-                .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))
+                .withSubject(email)
+                .withClaim("userId", userId)
+                .withClaim("name", name)
+                .withClaim("roles", roles)
                 .withJWTId(UUID.randomUUID().toString())
+                .withIssuedAt(new Date())
                 .withNotBefore(new Date(System.currentTimeMillis()))
+                .withExpiresAt(new Date(System.currentTimeMillis()  + jwtExpiration))
                 .sign(algorithm);
-
-        return jwtToken;
     }
 
     public DecodedJWT validateToken(String token) {

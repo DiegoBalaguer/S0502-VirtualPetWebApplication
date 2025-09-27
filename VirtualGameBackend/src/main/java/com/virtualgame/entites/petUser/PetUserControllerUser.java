@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user/petsusers")
@@ -54,6 +56,8 @@ public class PetUserControllerUser {
     @GetMapping("/list")
     public ResponseEntity<List<PetUserRespUserDto>> findPetsByUserId() {
         Long userId = currentUserService.getCurrentUserId();
+        log.debug("####################################################");
+        log.debug("userId for currentUserService: {}", userId);
         List<PetUserRespAdminDto> respAdminDto = petUserServiceImpl.findPetsUserByUserId(userId);
         return ResponseEntity.ok(respAdminDto.stream()
                 .map(petUserRespUserDtoMapper::toDtoByAdminDto)

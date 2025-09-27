@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public record UserUpdateUserDto(
 
-        @Schema(description = "User's username.", example = "Manuel")
+        @Schema(description = "User's email.", example = "Manuel")
         String username,
         @Schema(description = "User's email.", example = "user@correo.me")
         String email,

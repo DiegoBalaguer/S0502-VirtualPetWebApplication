@@ -33,7 +33,7 @@ public class AuthenticationController {
     })
     public ResponseEntity<AuthResponseDto> register(@RequestBody @Valid AuthCreateUserRequestDto authCreateUserRequestDto) {
 
-       return new ResponseEntity<>(authenticationService.createUser(authCreateUserRequestDto), HttpStatus.CREATED);
+       return new ResponseEntity<>(authenticationService.registerUser(authCreateUserRequestDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

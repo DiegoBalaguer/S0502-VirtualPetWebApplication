@@ -1,6 +1,7 @@
-package com.virtualgame.security.user.auth.dto;
+package com.virtualgame.security.user.auth.mapper;
 
 import com.virtualgame.entites.userEntity.UserEntity;
+import com.virtualgame.security.user.auth.dto.AuthCreateUserRequestDto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

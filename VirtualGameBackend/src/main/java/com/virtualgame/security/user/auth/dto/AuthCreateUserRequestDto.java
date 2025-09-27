@@ -8,7 +8,7 @@ import jakarta.validation.constraints.*;
     devolverá un Bad Request (400). El mensaje de error en el cuerpo de la respuesta indicará exactamente
     qué campo falló y por qué (por ejemplo, "Username cannot be empty" o "Password must be at least 4 characters").
 
-    A nivel de base de datos, si el username o el email ya existen, la restricción de unicidad en la entidad
+    A nivel de base de datos, si el email o el email ya existen, la restricción de unicidad en la entidad
     UserEntity (@Column(unique = true)) causará un DataIntegrityViolationException.
      */
 

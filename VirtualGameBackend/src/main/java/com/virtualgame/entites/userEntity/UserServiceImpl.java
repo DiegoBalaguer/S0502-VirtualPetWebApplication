@@ -7,7 +7,7 @@ import com.virtualgame.entites.userEntity.mapper.UserUpdateAdminDtoMapper;
 import com.virtualgame.security.user.roleEntity.RoleEntity;
 import com.virtualgame.security.user.roleEntity.RoleServiceImpl;
 import com.virtualgame.security.user.auth.dto.AuthCreateUserRequestDto;
-import com.virtualgame.security.user.auth.dto.AuthCreateUserRequestDtoMapper;
+import com.virtualgame.security.user.auth.mapper.AuthCreateUserRequestDtoMapper;
 import com.virtualgame.entites.userEntity.dto.*;
 import com.virtualgame.entites.petUser.PetUserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -57,12 +57,11 @@ public class UserServiceImpl {
         if (userLoad.getImageUrl() == null || userLoad.getImageUrl().isEmpty()) {
             userLoad.setImageUrl(appProperties.getDefaultUserEntityImageUrl());
         }
-        userLoad.setIsEnabled(true);
-        userLoad.setAccountNoExpired(true);
-        userLoad.setAccountNoLocked(true);
-        userLoad.setCredentialNoExpired(true);
+        userLoad.setIsEnabled(appProperties.getDefaultUserEnabled());
+        userLoad.setAccountNoExpired(appProperties.getDefaultAccountNoExpired());
+        userLoad.setAccountNoLocked(appProperties.getDefaultAccountNoLocked());
+        userLoad.setCredentialNoExpired(appProperties.getDefaultCredentialNoExpired());
         userLoad.setCreatedAt(LocalDateTime.now());
-        userLoad.setUpdatedAt(LocalDateTime.now());
 
         UserEntity savedEntity = saveUserEntity(userLoad);
         log.info("Created {} successfully with ID: {}", NAME_OBJECT, savedEntity.getId());
@@ -82,11 +81,21 @@ public class UserServiceImpl {
 
     @Transactional(readOnly = true)
     public UserEntity findUserEntityByUsername(String username) {
-        log.debug("Searching for {} by username: {}", NAME_OBJECT, username);
+        log.debug("Searching for {} by email: {}", NAME_OBJECT, username);
         return userRepository.findUserEntityByUsername(username)
                 .orElseThrow(() -> {
                     log.warn("User not found: {}", username);
-                    return new BadCredentialsException("Invalid credentials for username.");
+                    return new BadCredentialsException("Invalid credentials for email.");
+                });
+    }
+
+    @Transactional(readOnly = true)
+    public UserEntity findUserEntityByEmail(String email) {
+        log.debug("Searching for {} by email: {}", NAME_OBJECT, email);
+        return userRepository.findUserEntityByEmail(email)
+                .orElseThrow(() -> {
+                log.warn("{} not found with email: {}", NAME_OBJECT, email);
+                    return new BadCredentialsException("Invalid credentials for user email.");
                 });
     }
 
@@ -110,7 +119,6 @@ public class UserServiceImpl {
         UserEntity userUpdate = findById(userId);
         userUpdateAdminDtoMapper.forUpdateEntityFromDto(userUpdateAdminDto, userUpdate);
 
-        userUpdate.setUpdatedAt(LocalDateTime.now());
         userUpdate.setUpdatedBy(userIdAuth);
 
         UserEntity updateUserEntity = saveUserEntity(userUpdate);
@@ -167,7 +175,6 @@ public class UserServiceImpl {
 
         log.info("User password changed successfully with ID: {}", userIdChange);
         userChange.setPassword(passwordEncoder.encode(userUpdatePasswordDto.newPassword()));
-        userChange.setUpdatedAt(LocalDateTime.now());
         userChange.setUpdatedBy(userIdAuth);
         saveUserEntity(userChange);
     }
@@ -178,13 +185,14 @@ public class UserServiceImpl {
         return userRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Not found {} with ID: {}", NAME_OBJECT, id);
-                    return new BadCredentialsException("Invalid credentials for username.");
+                    return new BadCredentialsException("Invalid credentials for email.");
                 });
     }
 
     @Transactional
     public UserEntity saveUserEntity(UserEntity entitySave) {
         log.debug("Saving {}: {}", NAME_OBJECT, entitySave);
+        entitySave.setUpdatedAt(LocalDateTime.now());
         return userRepository.save(entitySave);
     }
 }

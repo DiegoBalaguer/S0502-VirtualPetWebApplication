@@ -9,9 +9,10 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findUserEntityByUsername(String username);
-//    Optional<UserEntity> findUserEntityByEmail(String email);
+
+    Optional<UserEntity> findUserEntityByEmail(String email);
 /*
-    @Query("SELECT COUNT(u) FROM UserEntity u JOIN u.roles r WHERE r.roleEnum = 'ADMIN' AND u.username != :currentUsername")
+    @Query("SELECT COUNT(u) FROM UserEntity u JOIN u.roles r WHERE r.roleEnum = 'ADMIN' AND u.email != :currentUsername")
     long countUsersWithAdminRoleExcludingCurrent(@Param("currentUsername") String currentUsername);
 
 */

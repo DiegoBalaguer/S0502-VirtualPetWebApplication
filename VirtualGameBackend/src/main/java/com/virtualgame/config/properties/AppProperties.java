@@ -18,9 +18,22 @@ public class AppProperties {
     private String heartbeatTimeInterval;
     private String defaultLanguageSystem;
     private String defaultLanguageUser;
+    private Boolean languageTranslateWithDefault;
+
+    // USER
+
+    private String defaultUserEntityImageUrl;
+    private Boolean defaultUserEnabled;
+    private Boolean defaultAccountNoExpired;
+    private Boolean defaultAccountNoLocked;
+    private Boolean defaultCredentialNoExpired;
+    private String defaultRole;
+
+
+
 
     // ENTITIES
-    private String defaultUserEntityImageUrl;
+
     private String defaultPetActionImageUrl;
     private String defaultPetEntityImageUrl;
     private String defaultPetHabitatImageUrl;

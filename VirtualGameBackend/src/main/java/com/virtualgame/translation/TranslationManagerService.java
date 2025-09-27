@@ -2,7 +2,6 @@ package com.virtualgame.translation;
 
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.userEntity.UserRepository;
-import com.virtualgame.entites.userEntity.UserServiceImpl;
 import com.virtualgame.translation.languageEntity.LanguageRepository;
 import com.virtualgame.translation.translationEntity.TranslationRepository;
 import jakarta.annotation.PostConstruct;
@@ -69,6 +68,8 @@ public class TranslationManagerService {
         }
 
         log.debug("Translation not found in cache, checking database");
+        if (appPrp.getLanguageTranslateWithDefault()) return messageKey;
+
         return translationRepository.findTranslatedTextByLanguageCodeAndMessageKey(languageCode, messageKey)
                 .orElse(messageKey);
     }

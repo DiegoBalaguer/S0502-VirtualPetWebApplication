@@ -22,7 +22,7 @@ public class UserEntity {
     @Schema(description = "User's identifier in the system.", example = "1001")
     private Long id;
     @Column(unique = true)
-    @Schema(description = "User's username.", example = "Manuel")
+    @Schema(description = "User's email.", example = "Manuel")
     private String username;
     @Column(unique = true)
     @Schema(description = "User's email.", example = "user@correo.me")

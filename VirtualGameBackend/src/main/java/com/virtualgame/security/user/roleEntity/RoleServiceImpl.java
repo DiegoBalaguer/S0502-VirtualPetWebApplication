@@ -20,5 +20,4 @@ public class RoleServiceImpl {
     public Set<RoleEntity> findRoleEntitiesByRoleEntityEnumIn(List<String> roleRequest) {
         return roleRepository.findRoleEntitiesByRoleEntityEnumIn(roleRequest).stream().collect(Collectors.toSet());
     }
-    // TODO: Falta por hacer el crud y la gestion de los roles
 }

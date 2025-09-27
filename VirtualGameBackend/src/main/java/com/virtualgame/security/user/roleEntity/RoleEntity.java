@@ -23,7 +23,7 @@ public class RoleEntity {
     private Long id;
 
     @Column(name = "role_name")
-    @Schema(description = "Role's username in the system.", example = "ADMIN")
+    @Schema(description = "Role's email in the system.", example = "ADMIN")
     @Enumerated(EnumType.STRING)
     private RoleEntityEnum roleEntityEnum;
 
