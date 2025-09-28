@@ -22,12 +22,12 @@ public class CacheConfig {
 
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
 
-        cacheManager.registerCustomCache("appSettings",
+/*        cacheManager.registerCustomCache("appSettings",
                 Caffeine.newBuilder()
                         .maximumSize(500)
                         .expireAfterAccess(90, TimeUnit.MINUTES)
                         .recordStats()
-                        .build());
+                        .build());*/
 
         cacheManager.registerCustomCache("pets",
                 Caffeine.newBuilder()

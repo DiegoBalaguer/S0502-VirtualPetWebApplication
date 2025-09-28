@@ -39,7 +39,6 @@ public class AppConfigurationService {
                 ));
     }
 
-
     @Transactional
     public AppConfigurationRespAdminDto create(AppConfigurationCreateDto createDto, Long userId) {
         log.debug(translate
@@ -69,7 +68,7 @@ public class AppConfigurationService {
         return appConfigurationRepository.existsByKeyName(name);
     }
 
-    @Cacheable(value = "appSettings", key = "#id")
+    //@Cacheable(value = "appSettings", key = "#id")
     @Transactional(readOnly = true)
     public AppConfiguration findById(Long id) {
         log.debug(translate
@@ -82,7 +81,7 @@ public class AppConfigurationService {
                 });
     }
 
-    @Cacheable(value = "appSettings", key = "#id")
+    //@Cacheable(value = "appSettings", key = "#id")
     @Transactional(readOnly = true)
     public AppConfigurationRespAdminDto findAppConfigurationById(Long id) {
         log.debug(translate
@@ -95,7 +94,7 @@ public class AppConfigurationService {
         return appConfigurationRespAdminDtoMapper.toDto(findEntity);
     }
 
-    @Cacheable(value = "appSettings", key = "#id")
+    //@Cacheable(value = "appSettings", key = "#id")
     @Transactional(readOnly = true)
     public List<AppConfigurationRespAdminDto> findAllAppConfiguration() {
         log.debug(translate
