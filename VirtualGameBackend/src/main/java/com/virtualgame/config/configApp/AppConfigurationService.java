@@ -1,11 +1,16 @@
 package com.virtualgame.config.configApp;
 
 import com.virtualgame.config.configApp.dto.*;
+import com.virtualgame.config.configApp.mapper.AppConfigurationCreateDtoMapper;
+import com.virtualgame.config.configApp.mapper.AppConfigurationRespAdminDtoMapper;
+import com.virtualgame.config.configApp.mapper.AppConfigurationUpdateDtoMapper;
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.exception.exceptions.NotFoundException;
 import com.virtualgame.translation.TranslationManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,8 +69,9 @@ public class AppConfigurationService {
         return appConfigurationRepository.existsByKeyName(name);
     }
 
+    @Cacheable(value = "appSettings", key = "#id")
     @Transactional(readOnly = true)
-    protected AppConfiguration findById(Long id) {
+    public AppConfiguration findById(Long id) {
         log.debug(translate
                 .getFormatSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
         return appConfigurationRepository.findById(id)
@@ -76,6 +82,7 @@ public class AppConfigurationService {
                 });
     }
 
+    @Cacheable(value = "appSettings", key = "#id")
     @Transactional(readOnly = true)
     public AppConfigurationRespAdminDto findAppConfigurationById(Long id) {
         log.debug(translate
@@ -88,6 +95,7 @@ public class AppConfigurationService {
         return appConfigurationRespAdminDtoMapper.toDto(findEntity);
     }
 
+    @Cacheable(value = "appSettings", key = "#id")
     @Transactional(readOnly = true)
     public List<AppConfigurationRespAdminDto> findAllAppConfiguration() {
         log.debug(translate

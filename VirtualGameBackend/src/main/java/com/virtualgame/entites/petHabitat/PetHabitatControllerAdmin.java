@@ -38,7 +38,7 @@ public class PetHabitatControllerAdmin {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPetHabitat);
     }
 
-    @Operation(summary = "Find petHbitat by ID", description = "Retrieves a specific petHabitat by its ID")
+    @Operation(summary = "Find petHabitat by ID", description = "Retrieves a specific petHabitat by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "petHabitat found"),
             @ApiResponse(responseCode = "404", description = "petHabitat not found")

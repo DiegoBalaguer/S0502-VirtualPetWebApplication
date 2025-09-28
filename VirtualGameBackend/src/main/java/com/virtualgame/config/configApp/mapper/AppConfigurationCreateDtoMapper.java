@@ -1,6 +1,7 @@
-package com.virtualgame.config.configApp.dto;
+package com.virtualgame.config.configApp.mapper;
 
 import com.virtualgame.config.configApp.AppConfiguration;
+import com.virtualgame.config.configApp.dto.AppConfigurationCreateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;

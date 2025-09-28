@@ -11,8 +11,6 @@ import java.util.List;
 public interface PetActionRepository extends JpaRepository<PetAction, Long> {
     Boolean existsByName(String name);
 
-    @Query("SELECT pa FROM PetAction pa WHERE pa.habitatId = :habitatId OR pa.habitatId IS NULL")
-    List<PetAction> findByHabitatIdOrHabitatIsNull(@Param("habitatId") long habitatId);
-
-
+    @Query("SELECT pa FROM PetAction pa WHERE pa.habitatId = :habitatId OR pa.habitatId = :parentId OR pa.habitatId IS NULL")
+    List<PetAction> findByHabitatIdOrParentIdOrHabitatIsNull(@Param("habitatId") Long habitatId, @Param("parentId") Long parentId);
 }

@@ -57,6 +57,7 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll();
                     http.requestMatchers("/api/test/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/public/**").permitAll();
+                    http.requestMatchers("/actuator/**").permitAll();
                     //http.requestMatchers(HttpMethod.POST, "/method/load").permitAll();
                     //http.requestMatchers(HttpMethod.GET, "/method/users").permitAll();
                     //http.requestMatchers("/swagger-ui/**").permitAll();

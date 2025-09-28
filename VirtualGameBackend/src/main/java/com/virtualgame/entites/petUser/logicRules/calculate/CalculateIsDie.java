@@ -36,8 +36,14 @@ public class CalculateIsDie {
                 log.debug("PetUser death for AgeDieDomedCity: {}", petUserCalc.getAge());
                 petUserSetDie(petUserCalc);
                 petUserCalc.setPetHabitatId(appProperties.getDefaultPetHabitatCarrouselId());
+            } else if (petUserCalc.getPetHabitatId() == appProperties.getDefaultPetHabitatCarrouselId()) {
+                log.debug("PetUser death for suicide in DomedCity: {}", petUserCalc.getAge());
+                petUserSetDie(petUserCalc);
             }
-        } else  {
+        } else if (petUserCalc.getPetHabitatId() == appProperties.getDefaultPetHabitatCementerId()) {
+            log.debug("PetUser death for suicide in Sanctuary: {}", petUserCalc.getAge());
+            petUserSetDie(petUserCalc);
+        } else {
           int probabilityAge = randomAge(appProperties.getDefaultPetAgeDieMinOutside(), appProperties.getDefaultPetAgeDieMaxOutside());
           if (petUserCalc.getAge() >= probabilityAge) {
               log.debug("PetUser death for Age: {}", petUserCalc.getAge());
@@ -45,7 +51,6 @@ public class CalculateIsDie {
               petUserCalc.setPetHabitatId(appProperties.getDefaultPetHabitatCementerId());
           }
         }
-        //return petUserRespAdminDtoMapper.toDto(petUserCalc);
     }
 
     private int randomAge(int num_min, int num_max) {

@@ -6,29 +6,29 @@ import jakarta.persistence.Column;
 import java.time.LocalDateTime;
 
 public record PetHabitatRespAdminDto(
-        @Schema(description = "Pet's action identifier", example = "1001")
+        @Schema(description = "PetHabitat identifier", example = "1001")
         Long id,
 
-        @Schema(description = "Pet's habitat parent identifier.", example = "1001")
+        @Schema(description = "PetHabitat parent identifier.", example = "1001")
         Long parentId,
 
-        @Schema(description = "Pet's action name", example = "RUN")
+        @Schema(description = "PetHabitat name", example = "RUN")
         String name,
 
-        @Schema(description = "Pet's action imageUrl", example = "https://i.pravatar.cc/200?img=46")
+        @Schema(description = "PetHabitat imageUrl", example = "https://i.pravatar.cc/200?img=46")
         String imageUrl,
 
-        @Schema(description = "Pet's habitat happy.", example = "5")
+        @Schema(description = "PetHabitat happy.", example = "5")
         Integer happy,
-        @Schema(description = "Pet's habitat tired.", example = "-5")
+        @Schema(description = "PetHabitat tired.", example = "-5")
         Integer tired,
-        @Schema(description = "Pet's habitat hungry.", example = "10")
+        @Schema(description = "PetHabitat hungry.", example = "10")
         Integer hungry,
-        @Schema(description = "Pet's habitat months.", example = "1")
+        @Schema(description = "PetHabitat months.", example = "1")
         Integer months,
-        @Schema(description = "Pet's habitat age.", example = "0")
+        @Schema(description = "PetHabitat age.", example = "0")
         Integer age,
-        @Schema(description = "Minium age for pet's habitat age.", example = "0")
+        @Schema(description = "Minium age for petHabitat age.", example = "0")
         Integer ageMin,
         @Schema(description = "Date when created", example = "2025-07-15")
         LocalDateTime createdAt,

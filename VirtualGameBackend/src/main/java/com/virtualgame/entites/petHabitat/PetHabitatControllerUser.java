@@ -50,9 +50,9 @@ public class PetHabitatControllerUser {
 
     @Operation(summary = "Find all petHabitat by parentId", description = "Retrieves all petHabitat by parentId from the system")
     @ApiResponse(responseCode = "200", description = "List of pet habitat retrieved")
-    @GetMapping("/list/{parentId}")
-    public ResponseEntity<List<PetHabitatRespUserDto>> findAllPetHabitats(@PathVariable Long parentId) {
-        List<PetHabitatRespAdminDto> petEntities = petHabitatServiceImpl.findAllPetHabitatByParentId(parentId);
+    @GetMapping("/list/{habitatId}")
+    public ResponseEntity<List<PetHabitatRespUserDto>> findAllPetHabitats(@PathVariable Long habitatId) {
+        List<PetHabitatRespAdminDto> petEntities = petHabitatServiceImpl.findAllPetHabitatByParentId(habitatId);
 
         return ResponseEntity.ok(petEntities.stream()
                 .map(petHabitatRespUserDtoMapper::toDtoByAdminDto)

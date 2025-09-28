@@ -5,19 +5,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 public record PetUserRespUserDto(
-        @Schema(description = "Pet's identifier", example = "1001")
+        @Schema(description = "PetUser identifier", example = "1001")
         Long id,
 
-        @Schema(description = "Pet's name", example = "Esther")
+        @Schema(description = "PetUser name", example = "Esther")
         String name,
 
-        @Schema(description = "Pet's type ID", example = "1")
+        @Schema(description = "PetUser type ID", example = "1")
         Long petTypeId,
 
         @Schema(description = "User's PetEntity proprietary ID", example = "1")
         Long userId,
 
-        @Schema(description = "Pet's imageUrl", example = "https://i.pravatar.cc/200?img=46")
+        @Schema(description = "PetUser imageUrl", example = "https://i.pravatar.cc/200?img=46")
         String imageUrl,
 
         @Schema(description = "Pet action", example = "1")
@@ -26,28 +26,28 @@ public record PetUserRespUserDto(
         @Schema(description = "Pet habitat", example = "1")
         Long petHabitatId,
 
-        @Schema(description = "Pet's happiness", example = "75")
+        @Schema(description = "PetUser happiness", example = "75")
         Integer happy,
 
-        @Schema(description = "Pet's happy.", example = "75")
+        @Schema(description = "PetUser happy.", example = "75")
         Integer happyReps,
 
-        @Schema(description = "Pet's tiredness", example = "75")
+        @Schema(description = "PetUser tiredness", example = "75")
         Integer tired,
 
-        @Schema(description = "Pet's tired.", example = "75")
+        @Schema(description = "PetUser tired.", example = "75")
         Integer tiredReps,
 
-        @Schema(description = "Pet's hunger", example = "50")
+        @Schema(description = "PetUser hunger", example = "50")
         Integer hungry,
 
-        @Schema(description = "Pet's hungry.", example = "50")
+        @Schema(description = "PetUser hungry.", example = "50")
         Integer hungryReps,
 
-        @Schema(description = "Pet's months.", example = "1")
+        @Schema(description = "PetUser months.", example = "1")
         Integer months,
 
-        @Schema(description = "Pet's age.", example = "0")
+        @Schema(description = "PetUser age.", example = "0")
         Integer age,
 
         @Schema(description = "Date when the pet death.", example = "2025-07-15")

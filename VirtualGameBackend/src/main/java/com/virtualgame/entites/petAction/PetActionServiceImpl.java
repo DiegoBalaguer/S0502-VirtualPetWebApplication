@@ -5,10 +5,12 @@ import com.virtualgame.entites.petAction.dto.*;
 import com.virtualgame.entites.petAction.mapper.PetActionCreateDtoMapper;
 import com.virtualgame.entites.petAction.mapper.PetActionRespAdminDtoMapper;
 import com.virtualgame.entites.petAction.mapper.PetActionUpdateAdminDtoMapper;
+import com.virtualgame.entites.petHabitat.PetHabitatServiceImpl;
 import com.virtualgame.exception.exceptions.NotFoundException;
 import com.virtualgame.translation.TranslationManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ public class PetActionServiceImpl {
     private final TranslationManagerService translate;
     private final AppProperties appPrp;
     private static final String NAME_OBJECT = "petAction";
+    private final PetHabitatServiceImpl petHabitatServiceImpl;
 
     @Transactional
     public PetActionRespAdminDto createPetAction(PetActionCreateDto createDto, Long userId) {
@@ -78,7 +81,22 @@ public class PetActionServiceImpl {
                 });
     }
 
-    @Transactional(readOnly = true)
+    // @Transactional(readOnly = true)
+    @Cacheable(value = "petAction", key = "#id")
+    public PetActionRespAdminDto findPetActionById(Long id) {
+        log.debug(translate
+                .getFormatSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
+        PetAction findPetAction = petActionRepository.findById(id)
+                .orElseThrow(() -> {
+                    String message = translate.getFormatSys("Not found {0} with ID: {1}", NAME_OBJECT, id);
+                    log.warn(message);
+                    return new NotFoundException(message);
+                });
+        return petActionRespAdminDtoMapper.toDto(findPetAction);
+    }
+
+
+/*    @Transactional(readOnly = true)
     public PetActionRespAdminDto findPetActionById(Long id) {
         log.debug(translate
                 .getFormatSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
@@ -88,7 +106,7 @@ public class PetActionServiceImpl {
         log.debug(translate
                 .getFormatSys("Found {0}: {1}", NAME_OBJECT, findEntity.getName()));
         return petActionRespAdminDtoMapper.toDto(findEntity);
-    }
+    }*/
 
     @Transactional(readOnly = true)
     public List<PetActionRespAdminDto> findAllPetAction() {
@@ -110,7 +128,8 @@ public class PetActionServiceImpl {
         log.debug(translate
                 .getFormatSys("Finding all {0}", NAME_OBJECT));
 
-        List<PetAction> findEntities = petActionRepository.findByHabitatIdOrHabitatIsNull(habitatId);
+        Long habitatParentId = petHabitatServiceImpl.findParentId(habitatId);
+        List<PetAction> findEntities = petActionRepository.findByHabitatIdOrParentIdOrHabitatIsNull(habitatId, habitatParentId);
 
         log.debug(translate
                 .getFormatSys("Found {0} units in {1}", findEntities.size(), NAME_OBJECT));

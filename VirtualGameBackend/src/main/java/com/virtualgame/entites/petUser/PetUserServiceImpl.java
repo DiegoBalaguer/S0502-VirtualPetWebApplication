@@ -2,6 +2,9 @@ package com.virtualgame.entites.petUser;
 
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.petAction.PetActionServiceImpl;
+import com.virtualgame.entites.petEntity.PetEntity;
+import com.virtualgame.entites.petEntity.PetServiceImpl;
+import com.virtualgame.entites.petEntity.dto.PetRespAdminDto;
 import com.virtualgame.entites.petHabitat.PetHabitatServiceImpl;
 import com.virtualgame.entites.petHabitat.dto.PetHabitatRespAdminDto;
 import com.virtualgame.entites.petUser.dto.*;
@@ -26,10 +29,11 @@ import java.util.List;
 public class PetUserServiceImpl {
 
     private final PetUserRepository petUserRepository;
-    private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
-    private final PetUserCreateDtoMapper petUserCreateDtoMapper;
+    private final PetServiceImpl petServiceImpl;
     private final PetActionServiceImpl petActionServiceImpl;
     private final PetHabitatServiceImpl petHabitatServiceImpl;
+    private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
+    private final PetUserCreateDtoMapper petUserCreateDtoMapper;
     private final PetUserRuleStatusDtoMapper petUserRuleStatusDtoMapper;
     private final PetUserValidations petUserValidations;
     private final PetUserRules petUserRules;
@@ -41,24 +45,29 @@ public class PetUserServiceImpl {
     public PetUserRespAdminDto createPetUser(PetUserCreateDto createDto, Long userAuthId) {
         log.debug("Creating new {} with name: {}", NAME_OBJECT, createDto.name());
 
-        PetUser pet = petUserCreateDtoMapper.toEntity(createDto);
-        if (pet.getImageUrl() == null || pet.getImageUrl().isEmpty()) {
-            pet.setImageUrl(appProperties.getDefaultPetUserEntityImageUrl());
+        PetUser petUser = petUserCreateDtoMapper.toEntity(createDto);
+        PetRespAdminDto petEntityDto = petServiceImpl.findPetEntityById(petUser.getPetTypeId());
+        if (petUser.getImageUrl() == null || petUser.getImageUrl().isEmpty()) {
+            if (!(petEntityDto.imageUrl() == null || petEntityDto.imageUrl().isEmpty())) {
+                petUser.setImageUrl(petEntityDto.imageUrl());
+            } else {
+                petUser.setImageUrl(appProperties.getDefaultPetUserEntityImageUrl());
+            }
         }
-        pet.setUserId(userAuthId);
-        pet.setPetHabitatId(appProperties.getDefaultPetHabitatCreatePetUser());
-        pet.setMonths(appProperties.getDefaultPetMonths());
-        pet.setAge(appProperties.getDefaultPetAge());
-        pet.setHappy(appProperties.getDefaultPetHappy());
-        pet.setTired(appProperties.getDefaultPetTired());
-        pet.setHungry(appProperties.getDefaultPetHungry());
-        pet.setHappyReps(appProperties.getDefaultPetHappyReps());
-        pet.setTiredReps(appProperties.getDefaultPetTiredReps());
-        pet.setHungryReps(appProperties.getDefaultPetHungryReps());
-        pet.setCreatedAt(LocalDateTime.now());
-        pet.setCreatedBy(userAuthId);
+        petUser.setUserId(userAuthId);
+        petUser.setPetHabitatId(appProperties.getDefaultPetHabitatCreatePetUser());
+        petUser.setMonths(appProperties.getDefaultPetMonths());
+        petUser.setAge(appProperties.getDefaultPetAge());
+        petUser.setHappy(appProperties.getDefaultPetHappy());
+        petUser.setTired(appProperties.getDefaultPetTired());
+        petUser.setHungry(appProperties.getDefaultPetHungry());
+        petUser.setHappyReps(appProperties.getDefaultPetHappyReps());
+        petUser.setTiredReps(appProperties.getDefaultPetTiredReps());
+        petUser.setHungryReps(appProperties.getDefaultPetHungryReps());
+        petUser.setCreatedAt(LocalDateTime.now());
+        petUser.setCreatedBy(userAuthId);
 
-        PetUser savedEntity = saveUserPet(pet, userAuthId);
+        PetUser savedEntity = saveUserPet(petUser, userAuthId);
         log.info("Created {} successfully with ID: {}", NAME_OBJECT, savedEntity.getId());
 
         return petUserRespAdminDtoMapper.toDto(savedEntity);
@@ -132,6 +141,13 @@ public class PetUserServiceImpl {
         log.info("Hard deleted successfully {} with proprietary user ID: {}", NAME_OBJECT, userId);
     }
 
+    @Transactional
+    public void hardDeletePetUserById(Long petUserId) {
+        log.debug("Hard deleting {} with ID: {}", NAME_OBJECT, petUserId);
+
+        petUserRepository.deleteById(petUserId);
+        log.info("Hard deleted successfully {} with ID: {}", NAME_OBJECT, petUserId);
+    }
 
     @Transactional(readOnly = true)
     public List<PetUserRespAdminDto> findPetsUserByType(Long petTypeId) {
@@ -175,7 +191,7 @@ public class PetUserServiceImpl {
                 .toDtoFromActionDto(petActionServiceImpl.findPetActionById(petActionId));
 
         PetUserValidationDto validationDto = new PetUserValidationDto(userIdAuth,
-                loadPetUser.getUserId(), loadPetUser.getDeathDate(),loadPetUser.getAge(), ruleStatusDto.ageMin(), "action");
+                loadPetUser.getUserId(), loadPetUser.getDeathDate(), loadPetUser.getAge(), ruleStatusDto.ageMin(), "action");
 
         petUserValidations.validationsPetUser(validationDto);
 
@@ -198,13 +214,13 @@ public class PetUserServiceImpl {
         PetHabitatRespAdminDto newHabitatDto = petHabitatServiceImpl.findPetHabitatById(newPetHabitatId);
 
         PetUserValidationDto validationDto = new PetUserValidationDto(userIdAuth,
-                loadPetUser.getUserId(), loadPetUser.getDeathDate(),loadPetUser.getAge(), newHabitatDto.ageMin(), "habitat");
+                loadPetUser.getUserId(), loadPetUser.getDeathDate(), loadPetUser.getAge(), newHabitatDto.ageMin(), "habitat");
 
         petUserValidations.validationsPetUser(validationDto);
 
         petUserValidations.petUserAlreadyHabitat(loadPetUser.getPetHabitatId(), newPetHabitatId, userIdAuth);
 
-        petUserValidations.petUserHabitatChangeAllowed(loadPetUser.getPetHabitatId(), newPetHabitatId,  userIdAuth);
+        petUserValidations.petUserHabitatChangeAllowed(loadPetUser.getPetHabitatId(), newPetHabitatId, userIdAuth);
 
         loadPetUser.setPetHabitatId(newHabitatDto.id());
 
@@ -216,7 +232,7 @@ public class PetUserServiceImpl {
 
         PetUserRespAdminDto savedPetUserRespAdminDto = updatePetUser(petUserId, modifyAdminDto, userIdAuth);
 
-        log.debug("Save petUser for doAction {}: {}", NAME_OBJECT, savedPetUserRespAdminDto.name());
+        log.debug("Save petUser for doMove {}: {}", NAME_OBJECT, savedPetUserRespAdminDto.name());
 
         return savedPetUserRespAdminDto;
     }

@@ -3,19 +3,19 @@ package com.virtualgame.entites.petUser.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record PetUserUpdateDto(
-        @Schema(description = "Pet's identifier", example = "1001")
+        @Schema(description = "PetUser identifier", example = "1001")
         Long id,
 
-        @Schema(description = "Pet's name", example = "Esther")
+        @Schema(description = "PetUser name", example = "Esther")
         String name,
 
-        @Schema(description = "Pet's type ID", example = "1")
+        @Schema(description = "PetUser type ID", example = "1")
         Long petTypeId,
 
-        @Schema(description = "User's PetEntity proprietary ID", example = "1")
+        @Schema(description = "User's PetUser proprietary ID", example = "1")
         Long userId,
 
-        @Schema(description = "Pet's imageUrl",  example = "https://i.pravatar.cc/200?img=46")
+        @Schema(description = "PetUser imageUrl",  example = "https://i.pravatar.cc/200?img=46")
         String imageUrl,
 
         @Schema(description = "Pet action Id", example = "1")
@@ -24,12 +24,12 @@ public record PetUserUpdateDto(
         @Schema(description = "Pet habitat Id", example = "1")
         Long petHabitatId,
 
-        @Schema(description = "Pet's happiness", example = "75")
+        @Schema(description = "PetUser happiness", example = "75")
         Integer happy,
 
-        @Schema(description = "Pet's tiredness", example = "75")
+        @Schema(description = "PetUser tiredness", example = "75")
         Integer tired,
 
-        @Schema(description = "Pet's hunger", example = "50")
+        @Schema(description = "PetUser hunger", example = "50")
         Integer hungry
 ) {}

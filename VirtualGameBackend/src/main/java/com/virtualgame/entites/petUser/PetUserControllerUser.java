@@ -97,14 +97,14 @@ public class PetUserControllerUser {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Hard delete pet", description = "Permanently deletes a pet from the system")
+    @Operation(summary = "Hard delete petUser", description = "Permanently delete a petUser from the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Pet deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Pet not found")
     })
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletePet(@PathVariable Long id) {
-        petUserServiceImpl.hardDeletePetUserByUserId(id);
+        petUserServiceImpl.hardDeletePetUserById(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -122,7 +122,7 @@ public class PetUserControllerUser {
 
     @Operation(summary = "Do action for pet user", description = "do action for pet user")
     @ApiResponse(responseCode = "200", description = "do action")
-    @PostMapping("/do-action/{petUserId}/{petUserActionId}")
+    @PostMapping("/action/{petUserId}/{petUserActionId}")
     public ResponseEntity<PetUserRespUserDto> doAction(
             @PathVariable Long petUserId,
             @PathVariable Long petUserActionId) {
@@ -134,7 +134,7 @@ public class PetUserControllerUser {
 
     @Operation(summary = "Change habitat for pet user", description = "Change habitat for pet user")
     @ApiResponse(responseCode = "200", description = "Change habitat")
-    @PostMapping("/do-move/{petUserId}/{petUserHabitatId}")
+    @PostMapping("/move/{petUserId}/{petUserHabitatId}")
     public ResponseEntity<PetUserRespUserDto> doMove(
     @PathVariable Long petUserId,
     @PathVariable Long petUserHabitatId) {

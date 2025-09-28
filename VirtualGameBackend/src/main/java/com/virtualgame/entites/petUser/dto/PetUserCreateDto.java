@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record PetUserCreateDto(
-        @NotBlank(message = "Name is required")
+        @NotBlank(message = "PetUser name is required")
         @Schema(description = "PetUser name", example = "Mi Mascota")
         String name,
 
