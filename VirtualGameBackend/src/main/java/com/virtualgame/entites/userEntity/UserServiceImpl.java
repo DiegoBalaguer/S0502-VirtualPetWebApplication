@@ -3,7 +3,11 @@ package com.virtualgame.entites.userEntity;
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.userEntity.mapper.UserRespAdminDtoMapper;
 import com.virtualgame.entites.userEntity.mapper.UserListAdminDtoMapper;
+import com.virtualgame.entites.userEntity.mapper.UserRespUserDtoMapper;
 import com.virtualgame.entites.userEntity.mapper.UserUpdateAdminDtoMapper;
+import com.virtualgame.entites.userEntity.userUtils.PasswordUtils;
+import com.virtualgame.security.user.auth.dto.AuthSecurityUserDto;
+import com.virtualgame.security.user.auth.utils.AuthoritiesUtils;
 import com.virtualgame.security.user.roleEntity.RoleEntity;
 import com.virtualgame.security.user.roleEntity.RoleServiceImpl;
 import com.virtualgame.security.user.auth.dto.AuthCreateUserRequestDto;
@@ -13,7 +17,8 @@ import com.virtualgame.entites.petUser.PetUserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,15 +33,19 @@ import java.util.stream.Collectors;
 public class UserServiceImpl {
 
     private final AppProperties appProperties;
-    private final PasswordEncoder passwordEncoder;
+
     private final UserRepository userRepository;
+    private final PasswordUtils passwordUtils;
     private final RoleServiceImpl roleServiceImpl;
     private final PetUserServiceImpl petUserServiceImpl;
+    private final AuthoritiesUtils authoritiesUtils;
     private final AuthCreateUserRequestDtoMapper authCreateUserRequestDtoMapper;
     private final UserRespAdminDtoMapper userRespAdminDtoMapper;
     private final UserListAdminDtoMapper userListAdminDtoMapper;
     private final UserUpdateAdminDtoMapper userUpdateAdminDtoMapper;
     private static final String NAME_OBJECT = "user entity";
+
+    private final UserRespUserDtoMapper userRespUserDtoMapper;
 
     @Transactional
     public UserEntity createUserEntity(AuthCreateUserRequestDto authCreateUserRequestDto) {
@@ -53,7 +62,7 @@ public class UserServiceImpl {
 
         UserEntity userLoad = authCreateUserRequestDtoMapper.toEntity(authCreateUserRequestDto);
         userLoad.setRolesEntity(roleEntitySet);
-        userLoad.setPassword(passwordEncoder.encode(userLoad.getPassword()));
+        userLoad.setPassword(passwordUtils.encode(userLoad.getPassword()));
         if (userLoad.getImageUrl() == null || userLoad.getImageUrl().isEmpty()) {
             userLoad.setImageUrl(appProperties.getDefaultUserEntityImageUrl());
         }
@@ -106,7 +115,6 @@ public class UserServiceImpl {
         List<UserEntity> userEntities = userRepository.findAll();
         log.info("Found {} {}", userEntities.size(), NAME_OBJECT);
 
-        //return userEntityRepository.findAll().stream()
         return userEntities.stream()
                 .map(userListAdminDtoMapper::toListDto)
                 .collect(Collectors.toList());
@@ -128,18 +136,19 @@ public class UserServiceImpl {
     }
 
     @Transactional
-    public void deleteSoftUserEntityById(Long userId, Long userIdAuth) {
-        log.debug("Soft deleting {} with ID: {}", NAME_OBJECT, userId);
+    public void deleteSoftUserEntityById(AuthSecurityUserDto securityUserDto, Long deleteUserId) {
+        log.debug("Soft deleting {} with ID: {}", NAME_OBJECT, deleteUserId);
 
-        UserEntity userDelete = findById(userId);
+        // TODO: no es correcto, cambiar por un update a todos los que son del deleteUserId
+        UserEntity userDelete = findById(deleteUserId);
 
-        petUserServiceImpl.softDeletePetUserByUserId(userId, userIdAuth);
+        petUserServiceImpl.softDeletePetUserByUserId(securityUserDto, deleteUserId);
 
         userDelete.setDeletedAt(LocalDateTime.now());
-        userDelete.setDeletedBy(userIdAuth);
+        userDelete.setDeletedBy(securityUserDto.userId());
 
         saveUserEntity(userDelete);
-        log.info("User Entity soft deleted successfully with ID: {}", userId);
+        log.info("User Entity soft deleted successfully with ID: {}", deleteUserId);
     }
 
     @Transactional
@@ -158,24 +167,11 @@ public class UserServiceImpl {
         log.debug("Updating password for {} with id: {}", NAME_OBJECT, userIdChange);
         UserEntity userChange = findById(userIdChange);
 
-        if (!passwordEncoder.matches(userUpdatePasswordDto.oldPassword(), userChange.getPassword())) {
-            log.debug("Old password does not match with new password: {}", userUpdatePasswordDto.oldPassword());
-            throw new BadCredentialsException("Invalid old password");
-        }
-
-        if (passwordEncoder.matches(userUpdatePasswordDto.newPassword(), userChange.getPassword())) {
-            log.debug("New password does not match with new password: {}", userUpdatePasswordDto.newPassword());
-            throw new IllegalArgumentException("New password must be different from the old password");
-        }
-
-        if (!userUpdatePasswordDto.newPassword().equals(userUpdatePasswordDto.newPasswordRetype())) {
-            log.debug("New password does not match with new password: {}", userUpdatePasswordDto.newPassword());
-            throw new IllegalArgumentException("New passwords do not match");
-        }
+        userChange.setPassword(passwordUtils.changePassword(userUpdatePasswordDto, userChange.getPassword()));
+        userChange.setUpdatedBy(userIdAuth);
 
         log.info("User password changed successfully with ID: {}", userIdChange);
-        userChange.setPassword(passwordEncoder.encode(userUpdatePasswordDto.newPassword()));
-        userChange.setUpdatedBy(userIdAuth);
+
         saveUserEntity(userChange);
     }
 
@@ -195,4 +191,21 @@ public class UserServiceImpl {
         entitySave.setUpdatedAt(LocalDateTime.now());
         return userRepository.save(entitySave);
     }
+
+    public List<SimpleGrantedAuthority> testList(Long id) {
+        UserEntity userEntity = findById(id);
+        return authoritiesUtils.getAuthoritiesRoles(userEntity);
+
+    }
+    public String test(Long id) {
+        UserEntity userEntity = findById(id);
+        return authoritiesUtils.getAuthoritiesRoles(userEntity).toString();
+
+    }
+
+    public UserRespUserDto testDto(Long id) {
+        UserEntity userEntity = findById(id);
+        return userRespUserDtoMapper.toDto(userEntity);
+    }
+
 }

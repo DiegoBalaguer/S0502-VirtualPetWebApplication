@@ -10,5 +10,7 @@ public record UserRespUserDto(
         @Schema(description = "User's email.", example = "user@correo.me")
         String email,
         @Schema(description = "User's imageUrl.", example = "https://i.pravatar.cc/200?img=46")
-        String imageUrl) {
+        String imageUrl,
+        @Schema(description = "User's imageUrl.", example = "https://i.pravatar.cc/200?img=46")
+        String roleList) {
 }

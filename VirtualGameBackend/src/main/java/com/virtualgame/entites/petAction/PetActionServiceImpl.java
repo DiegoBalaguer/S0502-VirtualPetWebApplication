@@ -34,11 +34,11 @@ public class PetActionServiceImpl {
     @Transactional
     public PetActionRespAdminDto createPetAction(PetActionCreateDto createDto, Long userId) {
         log.debug(translate
-                .getFormatSys("Creating new {0} with name: {1}", NAME_OBJECT, createDto.name()));
+                .getSys("Creating new {0} with name: {1}", NAME_OBJECT, createDto.name()));
 
         if (existsByName(createDto.name())) {
             String message = translate.
-                    getFormatSys("{0} with name {1} already exists", NAME_OBJECT, createDto.name());
+                    getSys("{0} with name {1} already exists", NAME_OBJECT, createDto.name());
             log.debug(message);
             throw new RuntimeException(message);
         }
@@ -57,7 +57,7 @@ public class PetActionServiceImpl {
         PetAction savedEntity = savePetAction(createEntity, userId);
 
         log.debug(translate
-                .getFormatSys("Created {0} successfully with ID: {1} and name: {2}", NAME_OBJECT, savedEntity.getId(), savedEntity.getName()));
+                .getSys("Created {0} successfully with ID: {1} and name: {2}", NAME_OBJECT, savedEntity.getId(), savedEntity.getName()));
 
         return petActionRespAdminDtoMapper.toDto(savedEntity);
     }
@@ -65,17 +65,17 @@ public class PetActionServiceImpl {
     @Transactional(readOnly = true)
     protected Boolean existsByName(String name) {
         log.debug(translate
-                .getFormatSys("Find exists {0} with name: {1}", NAME_OBJECT, name));
+                .getSys("Find exists {0} with name: {1}", NAME_OBJECT, name));
         return petActionRepository.existsByName(name);
     }
 
     @Transactional(readOnly = true)
     protected PetAction findById(Long id) {
         log.debug(translate
-                .getFormatSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
+                .getSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
         return petActionRepository.findById(id)
                 .orElseThrow(() -> {
-                    String message = translate.getFormatSys("Not found {0} with ID: {1}", NAME_OBJECT, id);
+                    String message = translate.getSys("Not found {0} with ID: {1}", NAME_OBJECT, id);
                     log.warn(message);
                     return new NotFoundException(message);
                 });
@@ -85,38 +85,25 @@ public class PetActionServiceImpl {
     @Cacheable(value = "petAction", key = "#id")
     public PetActionRespAdminDto findPetActionById(Long id) {
         log.debug(translate
-                .getFormatSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
+                .getSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
         PetAction findPetAction = petActionRepository.findById(id)
                 .orElseThrow(() -> {
-                    String message = translate.getFormatSys("Not found {0} with ID: {1}", NAME_OBJECT, id);
+                    String message = translate.getSys("Not found {0} with ID: {1}", NAME_OBJECT, id);
                     log.warn(message);
                     return new NotFoundException(message);
                 });
         return petActionRespAdminDtoMapper.toDto(findPetAction);
     }
 
-
-/*    @Transactional(readOnly = true)
-    public PetActionRespAdminDto findPetActionById(Long id) {
-        log.debug(translate
-                .getFormatSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
-
-        PetAction findEntity = findById(id);
-
-        log.debug(translate
-                .getFormatSys("Found {0}: {1}", NAME_OBJECT, findEntity.getName()));
-        return petActionRespAdminDtoMapper.toDto(findEntity);
-    }*/
-
     @Transactional(readOnly = true)
     public List<PetActionRespAdminDto> findAllPetAction() {
         log.debug(translate
-                .getFormatSys("Finding all {0}", NAME_OBJECT));
+                .getSys("Finding all {0}", NAME_OBJECT));
 
         List<PetAction> findEntities = petActionRepository.findAll();
 
         log.debug(translate
-                .getFormatSys("Found {0} units in {1}", findEntities.size(), NAME_OBJECT));
+                .getSys("Found {0} units in {1}", findEntities.size(), NAME_OBJECT));
 
         return findEntities.stream()
                 .map(petActionRespAdminDtoMapper::toDto)
@@ -126,13 +113,13 @@ public class PetActionServiceImpl {
     @Transactional(readOnly = true)
     public List<PetActionRespAdminDto> findPetActionByHabitatId(long habitatId) {
         log.debug(translate
-                .getFormatSys("Finding all {0}", NAME_OBJECT));
+                .getSys("Finding all {0}", NAME_OBJECT));
 
         Long habitatParentId = petHabitatServiceImpl.findParentId(habitatId);
         List<PetAction> findEntities = petActionRepository.findByHabitatIdOrParentIdOrHabitatIsNull(habitatId, habitatParentId);
 
         log.debug(translate
-                .getFormatSys("Found {0} units in {1}", findEntities.size(), NAME_OBJECT));
+                .getSys("Found {0} units in {1}", findEntities.size(), NAME_OBJECT));
 
         return findEntities.stream()
                 .map(petActionRespAdminDtoMapper::toDto)
@@ -142,7 +129,7 @@ public class PetActionServiceImpl {
     @Transactional
     public PetActionRespAdminDto updatePetAction(Long id, PetActionUpdateDto updateDto, Long userId) {
         log.debug(translate
-                .getFormatSys("Updating {0} with ID: {1}", NAME_OBJECT, id));
+                .getSys("Updating {0} with ID: {1}", NAME_OBJECT, id));
 
         PetAction existing = findById(id);
         petActionUpdateAdminDtoMapper.forUpdateEntityFromDto(updateDto, existing);
@@ -150,14 +137,14 @@ public class PetActionServiceImpl {
         PetAction updated = savePetAction(existing, userId);
 
         log.debug(translate
-                .getFormatSys("Updated successfully {0} with ID: {1}", NAME_OBJECT, id));
+                .getSys("Updated successfully {0} with ID: {1}", NAME_OBJECT, id));
         return petActionRespAdminDtoMapper.toDto(updated);
     }
 
     @Transactional
     public PetActionRespAdminDto deleteSoftPetAction(Long id, Long userId) {
         log.debug(translate
-                .getFormatSys("Soft deleting {0} with ID: {1}", NAME_OBJECT, id));
+                .getSys("Soft deleting {0} with ID: {1}", NAME_OBJECT, id));
 
         PetAction existing = findById(id);
 
@@ -167,25 +154,25 @@ public class PetActionServiceImpl {
         PetAction updated = savePetAction(existing, userId);
 
         log.debug(translate
-                .getFormatSys("Soft deleted successfully {0} with ID: {1}", NAME_OBJECT, id));
+                .getSys("Soft deleted successfully {0} with ID: {1}", NAME_OBJECT, id));
         return petActionRespAdminDtoMapper.toDto(updated);
     }
 
     @Transactional
     public void deletePetAction(Long id) {
         log.debug(translate
-                .getFormatSys("Hard deleting {0} with ID: {1}", NAME_OBJECT, id));
+                .getSys("Hard deleting {0} with ID: {1}", NAME_OBJECT, id));
 
         petActionRepository.delete(findById(id));
 
         log.debug(translate
-                .getFormatSys("Hard deleted successfully {0} with ID: {1}", NAME_OBJECT, id));
+                .getSys("Hard deleted successfully {0} with ID: {1}", NAME_OBJECT, id));
     }
 
     @Transactional
     protected PetAction savePetAction(PetAction entitySave, Long userAuthId) {
         log.debug(translate
-                .getFormatSys("Saving {0}: {1}", NAME_OBJECT, entitySave));
+                .getSys("Saving {0}: {1}", NAME_OBJECT, entitySave));
 
         if (entitySave.getName() != null) entitySave.setName(entitySave.getName().toUpperCase());
 
@@ -194,7 +181,7 @@ public class PetActionServiceImpl {
         PetAction savedEntity = petActionRepository.save(entitySave);
 
         log.debug(translate
-                .getFormatSys("Saved {0} successfully with ID: {1} and name: {2}", NAME_OBJECT, savedEntity.getId(), savedEntity.getName()));
+                .getSys("Saved {0} successfully with ID: {1} and name: {2}", NAME_OBJECT, savedEntity.getId(), savedEntity.getName()));
         return savedEntity;
     }
 

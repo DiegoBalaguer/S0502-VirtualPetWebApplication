@@ -1,29 +1,26 @@
 package com.virtualgame.security.user.auth;
 
-import com.virtualgame.entites.userEntity.UserServiceImpl;
+import com.virtualgame.security.user.auth.dto.AuthSecurityUserDto;
+import com.virtualgame.security.user.auth.mapper.AuthSecurityUserDtoMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CurrentUserService {
 
-    private final UserServiceImpl userEntityService;
+    private final AuthSecurityUserDtoMapper authSecurityUserDtoMapper;
 
     public Long getCurrentUserId() {
         SecurityUser su = getSecurityUser();
-        log.debug("###########################################################");
-        log.debug("###########################################################");
-        log.debug("#");
-        log.debug("UserEntityService getCurrentUserId: {}", su);
-        log.debug("UserEntityService getCurrentUserEmail: {}", getCurrentUserEmail());
-        log.debug("UserEntityService getCurrentUserName: {}", getCurrentUserName());
-        log.debug("#");
-        log.debug("###########################################################");
+         log.debug("UserEntityService getCurrentUserId: {}", su);
         return su != null ? su.getUserId() : null;
     }
 
@@ -35,6 +32,15 @@ public class CurrentUserService {
     public String getCurrentUserName() {
         SecurityUser su = getSecurityUser();
         return su != null ? su.getName() : null;
+    }
+
+    public String getCurrentUserLanguageCode() {
+        SecurityUser su = getSecurityUser();
+        return su != null ? su.getLanguageCode() : null;
+    }
+
+    public AuthSecurityUserDto getCurrentUserDto() {
+        return authSecurityUserDtoMapper.toDto(getSecurityUser());
     }
 
     private SecurityUser getSecurityUser() {

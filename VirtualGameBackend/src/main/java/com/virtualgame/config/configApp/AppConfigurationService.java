@@ -9,8 +9,6 @@ import com.virtualgame.exception.exceptions.NotFoundException;
 import com.virtualgame.translation.TranslationManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,11 +40,11 @@ public class AppConfigurationService {
     @Transactional
     public AppConfigurationRespAdminDto create(AppConfigurationCreateDto createDto, Long userId) {
         log.debug(translate
-                .getFormatSys("Creating new {0} with name: {1}", NAME_OBJECT, createDto.keyName()));
+                .getSys("Creating new {0} with name: {1}", NAME_OBJECT, createDto.keyName()));
 
         if (existsByName(createDto.keyName())) {
             String message = translate.
-                    getFormatSys("{0} with name {1} already exists", NAME_OBJECT, createDto.keyName());
+                    getSys("{0} with name {1} already exists", NAME_OBJECT, createDto.keyName());
             log.debug(message);
             throw new RuntimeException(message);
         }
@@ -56,7 +54,7 @@ public class AppConfigurationService {
         AppConfiguration savedEntity = saveAppConfiguration(createEntity, userId);
 
         log.debug(translate
-                .getFormatSys("Created {0} successfully with ID: {1} and name: {2}", NAME_OBJECT, savedEntity.getId(), savedEntity.getKeyName()));
+                .getSys("Created {0} successfully with ID: {1} and name: {2}", NAME_OBJECT, savedEntity.getId(), savedEntity.getKeyName()));
 
         return appConfigurationRespAdminDtoMapper.toDto(savedEntity);
     }
@@ -64,7 +62,7 @@ public class AppConfigurationService {
     @Transactional(readOnly = true)
     protected Boolean existsByName(String name) {
         log.debug(translate
-                .getFormatSys("Find exists {0} with name: {1}", NAME_OBJECT, name));
+                .getSys("Find exists {0} with name: {1}", NAME_OBJECT, name));
         return appConfigurationRepository.existsByKeyName(name);
     }
 
@@ -72,10 +70,10 @@ public class AppConfigurationService {
     @Transactional(readOnly = true)
     public AppConfiguration findById(Long id) {
         log.debug(translate
-                .getFormatSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
+                .getSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
         return appConfigurationRepository.findById(id)
                 .orElseThrow(() -> {
-                    String message = translate.getFormatSys("Not found {0} with ID: {1}", NAME_OBJECT, id);
+                    String message = translate.getSys("Not found {0} with ID: {1}", NAME_OBJECT, id);
                     log.warn(message);
                     return new NotFoundException(message);
                 });
@@ -85,12 +83,12 @@ public class AppConfigurationService {
     @Transactional(readOnly = true)
     public AppConfigurationRespAdminDto findAppConfigurationById(Long id) {
         log.debug(translate
-                .getFormatSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
+                .getSys("Finding {0} by ID: {1}", NAME_OBJECT, id));
 
         AppConfiguration findEntity = findById(id);
 
         log.debug(translate
-                .getFormatSys("Found {0}: {1}", NAME_OBJECT, findEntity.getKeyName()));
+                .getSys("Found {0}: {1}", NAME_OBJECT, findEntity.getKeyName()));
         return appConfigurationRespAdminDtoMapper.toDto(findEntity);
     }
 
@@ -98,12 +96,12 @@ public class AppConfigurationService {
     @Transactional(readOnly = true)
     public List<AppConfigurationRespAdminDto> findAllAppConfiguration() {
         log.debug(translate
-                .getFormatSys("Finding all {0}", NAME_OBJECT));
+                .getSys("Finding all {0}", NAME_OBJECT));
 
         List<AppConfiguration> findEntities = appConfigurationRepository.findAll();
 
         log.debug(translate
-                .getFormatSys("Found {0} units in {1}", findEntities.size(), NAME_OBJECT));
+                .getSys("Found {0} units in {1}", findEntities.size(), NAME_OBJECT));
 
         return findEntities.stream()
                 .map(appConfigurationRespAdminDtoMapper::toDto)
@@ -113,7 +111,7 @@ public class AppConfigurationService {
     @Transactional
     public AppConfigurationRespAdminDto updateAppConfiguration(Long id, AppConfigurationUpdateDto updateDto, Long userId) {
         log.debug(translate
-                .getFormatSys("Updating {0} with ID: {1}", NAME_OBJECT, id));
+                .getSys("Updating {0} with ID: {1}", NAME_OBJECT, id));
 
         AppConfiguration existing = findById(id);
         appConfigurationUpdateDtoMapper.forUpdateEntityFromDto(updateDto, existing);
@@ -121,30 +119,30 @@ public class AppConfigurationService {
         AppConfiguration updated = saveAppConfiguration(existing, userId);
 
         log.debug(translate
-                .getFormatSys("Updated successfully {0} with ID: {1}", NAME_OBJECT, id));
+                .getSys("Updated successfully {0} with ID: {1}", NAME_OBJECT, id));
         return appConfigurationRespAdminDtoMapper.toDto(updated);
     }
 
     @Transactional
     public void deleteAppConfiguration(Long id) {
         log.debug(translate
-                .getFormatSys("Hard deleting {0} with ID: {1}", NAME_OBJECT, id));
+                .getSys("Hard deleting {0} with ID: {1}", NAME_OBJECT, id));
 
         appConfigurationRepository.delete(findById(id));
 
         log.debug(translate
-                .getFormatSys("Hard deleted successfully {0} with ID: {1}", NAME_OBJECT, id));
+                .getSys("Hard deleted successfully {0} with ID: {1}", NAME_OBJECT, id));
     }
 
     @Transactional
     protected AppConfiguration saveAppConfiguration(AppConfiguration entitySave, Long userAuthId) {
         log.debug(translate
-                .getFormatSys("Saving {0}: {1}", NAME_OBJECT, entitySave));
+                .getSys("Saving {0}: {1}", NAME_OBJECT, entitySave));
 
         AppConfiguration savedEntity = appConfigurationRepository.save(entitySave);
 
         log.debug(translate
-                .getFormatSys("Saved {0} successfully with ID: {1} and name: {2}", NAME_OBJECT, savedEntity.getId(), savedEntity.getKeyName()));
+                .getSys("Saved {0} successfully with ID: {1} and name: {2}", NAME_OBJECT, savedEntity.getId(), savedEntity.getKeyName()));
         return savedEntity;
     }
 }

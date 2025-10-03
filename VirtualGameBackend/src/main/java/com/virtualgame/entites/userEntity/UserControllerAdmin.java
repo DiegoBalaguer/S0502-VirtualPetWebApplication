@@ -5,6 +5,7 @@ import com.virtualgame.entites.userEntity.dto.UserRespAdminDto;
 import com.virtualgame.entites.userEntity.dto.UserUpdateAdminDto;
 import com.virtualgame.entites.userEntity.dto.UserUpdatePasswordDto;
 import com.virtualgame.security.user.auth.CurrentUserService;
+import com.virtualgame.security.user.auth.dto.AuthSecurityUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -105,8 +106,8 @@ public class UserControllerAdmin {
                     )
             )
             @PathVariable Long id) {
-
-        userServiceImpl.deleteSoftUserEntityById(id, currentUserService.getCurrentUserId());
+        AuthSecurityUserDto authSecurityUserDto = currentUserService.getCurrentUserDto();
+        userServiceImpl.deleteSoftUserEntityById(authSecurityUserDto, id);
         return ResponseEntity.noContent().build();
     }
 

@@ -5,6 +5,7 @@ import com.virtualgame.entites.petEntity.dto.*;
 import com.virtualgame.entites.petEntity.mapper.PetCreateDtoMapper;
 import com.virtualgame.entites.petEntity.mapper.PetRespAdminDtoMapper;
 import com.virtualgame.entites.petEntity.mapper.PetUpdateDtoMapper;
+import com.virtualgame.entites.petImage.PetImageRepository;
 import com.virtualgame.exception.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.util.List;
 public class PetServiceImpl {
 
     private final PetRepository petRepository;
+    private final PetImageRepository petImageRepository;
     private final PetCreateDtoMapper petCreateDtoMapper;
     private final PetRespAdminDtoMapper petRespAdminDtoMapper;
     private final PetUpdateDtoMapper petUpdateDtoMapper;

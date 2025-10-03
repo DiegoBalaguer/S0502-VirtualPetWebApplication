@@ -2,12 +2,12 @@ package com.virtualgame.security.user.auth;
 
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.userEntity.UserServiceImpl;
-import com.virtualgame.security.user.auth.dto.AuthCreateRoleRequestDto;
-import com.virtualgame.security.user.auth.dto.AuthCreateUserRequestDto;
-import com.virtualgame.security.user.auth.dto.AuthLoginRequestDto;
-import com.virtualgame.security.user.auth.dto.AuthResponseDto;
+import com.virtualgame.security.user.auth.dto.*;
 import com.virtualgame.security.user.JwtUtils;
 import com.virtualgame.entites.userEntity.UserEntity;
+import com.virtualgame.security.user.auth.utils.AuthoritiesUtils;
+import com.virtualgame.translation.languageEntity.LanguageEntity;
+import com.virtualgame.translation.languageEntity.LanguageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -28,6 +27,8 @@ import java.util.List;
 public class AuthenticationService implements UserDetailsService {
 
     private final UserServiceImpl userServiceImpl;
+    private final AuthoritiesUtils authoritiesUtils;
+    private final LanguageServiceImpl languageServiceImpl;
     private final PasswordEncoder passwordEncoder;
     private final AppProperties appProperties;
     private final JwtUtils jwtUtils;
@@ -44,7 +45,10 @@ public class AuthenticationService implements UserDetailsService {
 
         UserEntity userEntity = userServiceImpl.findUserEntityByEmail(email);
 
-        String accessToken = jwtUtils.createToken(authentication, userEntity.getId(), userEntity.getUsername());
+        LanguageEntity languageEntity = languageServiceImpl.findById(userEntity.getLanguageId());
+
+        AuthCreateTokenDto createTokenDto = new AuthCreateTokenDto(authentication, userEntity.getId(), userEntity.getUsername(), languageEntity.getCode());
+        String accessToken = jwtUtils.createToken(createTokenDto);
 
         return new AuthResponseDto(email, "User logged successfully", accessToken, true);
     }
@@ -78,7 +82,12 @@ public class AuthenticationService implements UserDetailsService {
         }
         log.info("Authentication successful for user: {}", email);
 
-        SecurityUser securityUser = new SecurityUser(userDetails.getUserId(), userDetails.getUsername(), userDetails.getName());
+        SecurityUser securityUser = SecurityUser.builder()
+                .userId(userDetails.getUserId())
+                .email(userDetails.getUsername())
+                .name(userDetails.getName())
+                .languageCode(userDetails.getLanguageCode())
+                .build();
 
         return new UsernamePasswordAuthenticationToken(securityUser, userDetails.getPassword(), userDetails.getAuthorities());
     }
@@ -89,20 +98,12 @@ public class AuthenticationService implements UserDetailsService {
         log.info("UserEntityService loadUserByUsername email: {}", email);
 
         UserEntity userEntity = userServiceImpl.findUserEntityByEmail(email);
+        LanguageEntity languageEntity = languageServiceImpl.findById(userEntity.getLanguageId());
 
-        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-
-        userEntity.getRolesEntity()
-                .forEach(role ->
-                        authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEntityEnum().name()))));
-
-        userEntity.getRolesEntity().stream()
-                .flatMap(role -> role.getPermissionList().stream())
-                .forEach(permission ->
-                        authorityList.add(new SimpleGrantedAuthority(permission.getName())));
+        List<SimpleGrantedAuthority> authorityList = authoritiesUtils.getAuthorities(userEntity);
 
         log.info("User loaded successfully: {}", email);
 
-        return new CustomUserDetails(userEntity, authorityList);
+        return new CustomUserDetails(userEntity, languageEntity.getCode(), authorityList);
     }
 }

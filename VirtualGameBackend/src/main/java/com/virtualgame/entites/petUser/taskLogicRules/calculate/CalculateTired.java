@@ -1,9 +1,10 @@
-package com.virtualgame.entites.petUser.logicRules.calculate;
+package com.virtualgame.entites.petUser.taskLogicRules.calculate;
 
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.petUser.PetUser;
-import com.virtualgame.entites.petUser.dto.PetUserRespAdminDto;
 import com.virtualgame.entites.petUser.mapper.PetUserRespAdminDtoMapper;
+import com.virtualgame.security.user.auth.CurrentUserService;
+import com.virtualgame.translation.TranslationManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,13 @@ import java.time.LocalDateTime;
 public class CalculateTired {
 
     private final AppProperties appProperties;
+    private final TranslationManagerService translate;
+    private final CurrentUserService currentUserService;
     private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
 
     public void valueTired(PetUser petUserCalc, int valueTired) {
-        log.debug("Calculating Tired.");
-        //PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
+        log.debug(translate
+                .getSys("Calculating Tired."));
 
         int tiredMin = appProperties.getDefaultPetTiredMin();
         int tiredMax = appProperties.getDefaultPetTiredMax();
@@ -29,7 +32,8 @@ public class CalculateTired {
 
         if ((petTired >= tiredMax && valueTired >= 0) || (petTired <= tiredMin && valueTired < 0)) {
             petUserCalc.setTiredReps(petUserCalc.getTiredReps() + 1);
-            log.debug("Min or Max Tired repetitions: " + petUserCalc.getHappyReps());
+            log.debug(translate
+                    .getSys("Min or Max Tired repetitions: {0}", petUserCalc.getHappyReps()));
         } else {
             newTired = Math.max(newTired, tiredMin);
             newTired = Math.min(newTired, tiredMax);
@@ -37,9 +41,13 @@ public class CalculateTired {
             petUserCalc.setTiredReps(0);
         }
         if (petUserCalc.getTiredReps() >= appProperties.getDefaultPetTiredDangerReps()) {
-            log.debug("PetUser death for getTiredReps: {}", petUserCalc.getTiredReps());
+            log.debug(translate
+                    .getSys("PetUser death for getTiredReps: {0}", petUserCalc.getTiredReps()));
             petUserCalc.setDeathDate(LocalDateTime.now());
+
+            petUserCalc.setDeathReason(translate.getUsr(
+                    currentUserService.getCurrentUserLanguageCode(),
+                    "PetUser death for getTiredReps: {0}", petUserCalc.getTiredReps()));
         }
-        //return petUserRespAdminDtoMapper.toDto(petUserCalc);
     }
 }

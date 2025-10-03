@@ -9,5 +9,7 @@ import java.util.List;
 public interface PetHabitatRepository extends JpaRepository<PetHabitat, Long> {
     List<PetHabitat> findAllByParentId(Long parentId);
 
+
+
 }
 

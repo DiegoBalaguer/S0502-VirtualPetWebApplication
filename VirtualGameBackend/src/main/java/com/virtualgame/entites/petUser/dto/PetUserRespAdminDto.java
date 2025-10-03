@@ -39,6 +39,8 @@ public record PetUserRespAdminDto(
         Integer age,
         @Schema(description = "Date when the PetUser death.", example = "2025-07-15")
         LocalDateTime deathDate,
+        @Schema(description = "Reason for death petUser.", example = "PetUser death for Age")
+        String deathReason,
         @Schema(description = "Date when the PetUser was created.", example = "2025-07-15")
         LocalDateTime createdAt,
         @Schema(description = "User ID that created the PetUser", example = "1001")

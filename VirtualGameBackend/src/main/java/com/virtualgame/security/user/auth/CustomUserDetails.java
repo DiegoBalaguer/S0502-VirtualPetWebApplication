@@ -15,6 +15,8 @@ public class CustomUserDetails implements UserDetails {
     @Getter
     private final String name;
     private final String password;
+    @Getter
+    private final String languageCode;
     private final Collection<? extends GrantedAuthority> authorities;
 
     private final boolean accountNonExpired;
@@ -22,11 +24,12 @@ public class CustomUserDetails implements UserDetails {
     private final boolean credentialsNonExpired;
     private final boolean enabled;
 
-    public CustomUserDetails(UserEntity user, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(UserEntity user, String languageCode, Collection<? extends GrantedAuthority> authorities) {
         this.userId = user.getId();
         this.email = user.getEmail();
         this.name = user.getUsername();
         this.password = user.getPassword();
+        this.languageCode = languageCode;
         this.authorities = authorities;
 
         this.accountNonExpired = user.getAccountNoExpired();

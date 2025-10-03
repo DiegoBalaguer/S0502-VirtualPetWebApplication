@@ -1,8 +1,12 @@
 package com.virtualgame.entites.petUser;
 
 import com.virtualgame.entites.petUser.dto.*;
-import com.virtualgame.entites.petUser.mapper.PetUserRespUserDtoMapper;
+import com.virtualgame.entites.petUser.mapper.PetUserRequestUserDtoMapper;
+import com.virtualgame.entites.petUser.mapper.PetUserRespTaskUserDtoMapper;
+import com.virtualgame.entites.petUser.tasks.DoAction;
+import com.virtualgame.entites.petUser.tasks.DoMove;
 import com.virtualgame.security.user.auth.CurrentUserService;
+import com.virtualgame.security.user.auth.dto.AuthSecurityUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -25,8 +29,11 @@ import java.util.stream.Collectors;
 public class PetUserControllerUser {
 
     private final PetUserServiceImpl petUserServiceImpl;
+    private final DoAction doAction;
+    private final DoMove doMove;
     private final CurrentUserService currentUserService;
-    private final PetUserRespUserDtoMapper petUserRespUserDtoMapper;
+    private final PetUserRequestUserDtoMapper petUserRequestUserDtoMapper;
+    private final PetUserRespTaskUserDtoMapper petUserRespTaskUserDtoMapper;
 
     @Operation(summary = "Create a new user pet", description = "Creates a new pet in the user")
     @ApiResponses(value = {
@@ -34,10 +41,10 @@ public class PetUserControllerUser {
             @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PostMapping("/create")
-    public ResponseEntity<PetUserRespAdminDto> create(
+    public ResponseEntity<PetUserRespTaskUserDto> create(
             @RequestBody @Valid PetUserCreateDto createDto) {
-        PetUserRespAdminDto createdPet = petUserServiceImpl.createPetUser(createDto, currentUserService.getCurrentUserId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPet);
+        PetUserRespTaskAdminDto createdPet = petUserServiceImpl.createPetUser(createDto, currentUserService.getCurrentUserId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(petUserRespTaskUserDtoMapper.toDtoByFullAdminDto(createdPet));
     }
 
     @Operation(summary = "Get pet by ID", description = "Retrieves a specific pet by its ID")
@@ -46,21 +53,21 @@ public class PetUserControllerUser {
             @ApiResponse(responseCode = "404", description = "Pet not found")
     })
     @GetMapping("/find/{id}")
-    public ResponseEntity<PetUserRespUserDto> findPetById(@PathVariable Long id) {
-        PetUserRespAdminDto respAdminDto = petUserServiceImpl.findPetUserById(id);
-        return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
+    public ResponseEntity<PetUserRespTaskUserDto> findPetById(@PathVariable Long id) {
+        PetUserRespTaskAdminDto respAdminDto = petUserServiceImpl.findPetUserById(id);
+        return ResponseEntity.ok(petUserRespTaskUserDtoMapper.toDtoByFullAdminDto(respAdminDto));
     }
 
     @Operation(summary = "Get all pets", description = "Retrieves all petsUser by user from the system")
     @ApiResponse(responseCode = "200", description = "List of pets retrieved")
     @GetMapping("/list")
-    public ResponseEntity<List<PetUserRespUserDto>> findPetsByUserId() {
+    public ResponseEntity<List<PetUserRespTaskUserDto>> findPetsByUserId() {
         Long userId = currentUserService.getCurrentUserId();
         log.debug("####################################################");
         log.debug("userId for currentUserService: {}", userId);
-        List<PetUserRespAdminDto> respAdminDto = petUserServiceImpl.findPetsUserByUserId(userId);
+        List<PetUserRespTaskAdminDto> respAdminDto = petUserServiceImpl.findPetsUserByUserId(userId);
         return ResponseEntity.ok(respAdminDto.stream()
-                .map(petUserRespUserDtoMapper::toDtoByAdminDto)
+                .map(petUserRespTaskUserDtoMapper::toDtoByFullAdminDto)
                 .collect(Collectors.toList()));
     }
 
@@ -71,17 +78,17 @@ public class PetUserControllerUser {
             @ApiResponse(responseCode = "404", description = "Pet not found")
     })
     @PutMapping("/update/{id}")
-    public ResponseEntity<PetUserRespUserDto> updatePet(
+    public ResponseEntity<PetUserRespTaskUserDto> updatePet(
             @PathVariable Long id,
-            @RequestBody @Valid PetUserRespUserDto userDto) {
+            @RequestBody @Valid PetUserRequestUserDto userDto) {
 
-        PetUserRespAdminDto respAdminDto =
+        PetUserRespTaskAdminDto respAdminDto =
                 petUserServiceImpl
                         .updatePetUser(id,
-                                petUserRespUserDtoMapper.toAdminDtoByDto(userDto),
+                                petUserRequestUserDtoMapper.toAdminDtoByDto(userDto),
                                 currentUserService.getCurrentUserId());
 
-        return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
+        return ResponseEntity.ok(petUserRespTaskUserDtoMapper.toDtoByFullAdminDto(respAdminDto));
     }
 
     @Operation(summary = "Soft delete pet", description = "Marks a pet as deleted (soft delete)")
@@ -92,8 +99,8 @@ public class PetUserControllerUser {
     @PatchMapping("/delete-soft/{id}")
     public ResponseEntity<Void> softDeletePet(
             @PathVariable Long id) {
-
-        petUserServiceImpl.softDeletePetUserByUserId(id, currentUserService.getCurrentUserId());
+        AuthSecurityUserDto authSecurityUserDto = currentUserService.getCurrentUserDto();
+        petUserServiceImpl.softDeletePetUserByUserId(authSecurityUserDto, id);
         return ResponseEntity.noContent().build();
     }
 
@@ -111,36 +118,32 @@ public class PetUserControllerUser {
     @Operation(summary = "Search pets by type", description = "Searches pets by type ID")
     @ApiResponse(responseCode = "200", description = "List of matching pets")
     @GetMapping("/find-by-type")
-    public ResponseEntity<List<PetUserRespUserDto>> findPetsByType(
+    public ResponseEntity<List<PetUserRespTaskUserDto>> findPetsByType(
             @RequestParam Long typeId) {
 
-        List<PetUserRespAdminDto> respAdminDto = petUserServiceImpl.findPetsUserByType(typeId);
+        List<PetUserRespTaskAdminDto> respAdminDto = petUserServiceImpl.findPetsUserByType(typeId);
         return ResponseEntity.ok(respAdminDto.stream()
-                .map(petUserRespUserDtoMapper::toDtoByAdminDto)
+                .map(petUserRespTaskUserDtoMapper::toDtoByFullAdminDto)
                 .collect(Collectors.toList()));
     }
 
     @Operation(summary = "Do action for pet user", description = "do action for pet user")
     @ApiResponse(responseCode = "200", description = "do action")
-    @PostMapping("/action/{petUserId}/{petUserActionId}")
-    public ResponseEntity<PetUserRespUserDto> doAction(
-            @PathVariable Long petUserId,
-            @PathVariable Long petUserActionId) {
-
-        PetUserRespAdminDto respAdminDto = petUserServiceImpl
-                .doActionPetUser(petUserId, currentUserService.getCurrentUserId(), petUserActionId);
-        return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
+    @PostMapping("/action")
+    public ResponseEntity<PetUserRespTaskUserDto> doAction(
+            @RequestBody @Valid PetUserTaskRequestUserDto taskDto) {
+        PetUserRespTaskAdminDto respAdminDto = doAction
+                .doActionPetUser(taskDto, currentUserService.getCurrentUserId());
+        return ResponseEntity.ok(petUserRespTaskUserDtoMapper.toDtoByFullAdminDto(respAdminDto));
     }
 
     @Operation(summary = "Change habitat for pet user", description = "Change habitat for pet user")
     @ApiResponse(responseCode = "200", description = "Change habitat")
-    @PostMapping("/move/{petUserId}/{petUserHabitatId}")
-    public ResponseEntity<PetUserRespUserDto> doMove(
-    @PathVariable Long petUserId,
-    @PathVariable Long petUserHabitatId) {
-
-        PetUserRespAdminDto respAdminDto = petUserServiceImpl
-                .doMovePetUser(petUserId, currentUserService.getCurrentUserId(), petUserHabitatId);
-        return ResponseEntity.ok(petUserRespUserDtoMapper.toDtoByAdminDto(respAdminDto));
+    @PostMapping("/move")
+    public ResponseEntity<PetUserRespTaskUserDto> doMove(
+            @RequestBody @Valid PetUserTaskRequestUserDto taskDto) {
+        PetUserRespTaskAdminDto respAdminDto = doMove
+                .doMovePetUser(taskDto, currentUserService.getCurrentUserId());
+        return ResponseEntity.ok(petUserRespTaskUserDtoMapper.toDtoByFullAdminDto(respAdminDto));
     }
 }

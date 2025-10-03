@@ -1,9 +1,8 @@
-package com.virtualgame.entites.petUser.logicRules.calculate;
+package com.virtualgame.entites.petUser.taskLogicRules.calculate;
 
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.petUser.PetUser;
-import com.virtualgame.entites.petUser.dto.PetUserRespAdminDto;
-import com.virtualgame.entites.petUser.mapper.PetUserRespAdminDtoMapper;
+import com.virtualgame.translation.TranslationManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,12 +13,11 @@ import org.springframework.stereotype.Service;
 public class CalculateAge {
 
     private final AppProperties appProperties;
-    private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
+    private final TranslationManagerService translate;
 
     public void valueAge(PetUser petUserCalc, int valueMonths, int valueAge) {
-        log.debug("Calculating Months age for pet.");
-        //PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
-
+        log.debug(translate
+                .getSys("Calculating Months age for pet."));
         Integer newMonths = petUserCalc.getMonths() + valueMonths;
         if (newMonths >= appProperties.getDefaultPetMouthsToAge()) {
             petUserCalc.setMonths(newMonths - appProperties.getDefaultPetMouthsToAge());
@@ -28,6 +26,5 @@ public class CalculateAge {
             petUserCalc.setMonths(newMonths);
         }
         petUserCalc.setAge(petUserCalc.getAge() + valueAge);
-        //return petUserRespAdminDtoMapper.toDto(petUserCalc);
     }
 }

@@ -30,9 +30,11 @@ public class PetHabitatServiceImpl {
     private final PetHabitatCreateDtoMapper petHabitatCreateDtoMapper;
     private final PetHabitatRespAdminDtoMapper petHabitatRespAdminDtoMapper;
     private final PetHabitatUpdateDtoMapper petHabitatUpdateDtoMapper;
+/*
     @Lazy
     @Autowired
     private PetHabitatServiceImpl self;
+*/
     public static final String ALL_PET_ENTITIES_KEY = "'allPetsList'"; // se han de dejar las comillas simples!!
 
     private static final String NAME_OBJECT = "pet habitat";
@@ -56,7 +58,7 @@ public class PetHabitatServiceImpl {
         petHabitat.setUpdatedAt(LocalDateTime.now());
         petHabitat.setUpdatedBy(userId);
 
-        PetHabitat savedEntity = self.savePetHabitat(petHabitat);
+        PetHabitat savedEntity = savePetHabitat(petHabitat);
         log.info("Created {} successfully with ID: {}", NAME_OBJECT, savedEntity.getId());
 
         return petHabitatRespAdminDtoMapper.toDto(savedEntity);
@@ -93,7 +95,7 @@ public class PetHabitatServiceImpl {
         log.debug("Finding all by parentId {} by ID: {}", NAME_OBJECT, petHabitatId);
 
         Long parentId = findParentId(petHabitatId);
-        List<PetHabitatRespAdminDto> petHabitatList = self.findAllPetHabitatByParentIdList(parentId);
+        List<PetHabitatRespAdminDto> petHabitatList = findAllPetHabitatByParentIdList(parentId);
 
         log.info("Found {} {}", petHabitatList.size(), NAME_OBJECT);
 
@@ -118,7 +120,7 @@ public class PetHabitatServiceImpl {
     public Long findParentId(Long petHabitatId) {
         log.debug("Finding parentId {} by ID: {}", NAME_OBJECT, petHabitatId);
 
-        PetHabitat petHabitat = self.findById(petHabitatId);
+        PetHabitat petHabitat = findById(petHabitatId);
 
         return petHabitat.getParentId();
     }
@@ -127,13 +129,13 @@ public class PetHabitatServiceImpl {
     public PetHabitatRespAdminDto updatePetHabitat(Long id, PetHabitatUpdateDto updateDto, Long userId) {
         log.debug("Updating {} with ID: {}", NAME_OBJECT, id);
 
-        PetHabitat petHabitat = self.findById(id);
+        PetHabitat petHabitat = findById(id);
         petHabitatUpdateDtoMapper.forUpdateEntityFromDto(updateDto, petHabitat);
 
         petHabitat.setUpdatedAt(LocalDateTime.now());
         petHabitat.setUpdatedBy(userId);
 
-        PetHabitat updatedPetHabitat = self.savePetHabitat(petHabitat);
+        PetHabitat updatedPetHabitat = savePetHabitat(petHabitat);
         log.info("Updated successfully {} with ID: {}", NAME_OBJECT, id);
 
         return petHabitatRespAdminDtoMapper.toDto(updatedPetHabitat);
@@ -143,12 +145,12 @@ public class PetHabitatServiceImpl {
     public void softDeletePetHabitat(Long id, Long userId) {
         log.debug("Soft deleting {} with ID: {}", NAME_OBJECT, id);
 
-        PetHabitat petHabitat = self.findById(id);
+        PetHabitat petHabitat = findById(id);
 
         petHabitat.setDeletedAt(LocalDateTime.now());
         petHabitat.setDeletedBy(userId);
 
-        self.savePetHabitat(petHabitat);
+        savePetHabitat(petHabitat);
         log.info("Soft deleted successfully {} with ID: {}", NAME_OBJECT, id);
     }
 
@@ -157,7 +159,7 @@ public class PetHabitatServiceImpl {
     public void deletePetHabitat(Long id) {
         log.debug("Hard deleting {} with ID: {}", NAME_OBJECT, id);
 
-        self.findById(id);
+        findById(id);
 
         petHabitatRepository.deleteById(id);
         log.info("Hard deleted successfully {} with ID: {}", NAME_OBJECT, id);
@@ -191,13 +193,13 @@ public class PetHabitatServiceImpl {
 
     public boolean isInDomedCity(Long habitatId) {
         Long domedCityId = appProperties.getDefaultPetHabitatDomedCityId();
-        PetHabitat petHabitat = self.findById(habitatId);
+        PetHabitat petHabitat = findById(habitatId);
         return (petHabitat.getId().equals(domedCityId) || petHabitat.getParentId().equals(domedCityId));
     }
 
     public boolean isInSanctuary(Long habitatId) {
         Long sanctuaryId = appProperties.getDefaultPetHabitatSanctuaryId();
-        PetHabitat petHabitat = self.findById(habitatId);
+        PetHabitat petHabitat = findById(habitatId);
         return (petHabitat.getId().equals(sanctuaryId) || petHabitat.getParentId().equals(sanctuaryId));
     }
 }

@@ -1,8 +1,6 @@
 package com.virtualgame.translation;
 
 import com.virtualgame.config.properties.AppProperties;
-import com.virtualgame.entites.userEntity.UserRepository;
-import com.virtualgame.translation.languageEntity.LanguageRepository;
 import com.virtualgame.translation.translationEntity.TranslationRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -18,31 +16,31 @@ public class TranslationManagerService {
 
     private final TranslationCacheService translationCacheService;
     private final TranslationRepository translationRepository;
-    private final UserRepository userRepository;
-    private final LanguageRepository languageRepository;
-    private final AppProperties appPrp;
+    private final AppProperties appProperties;
     private String langSys;
     private String langUser;
 
     @PostConstruct
     public void init() {
-        this.langSys = appPrp.getDefaultLanguageSystem();
-        this.langUser = appPrp.getDefaultLanguageUser();
+        this.langSys = appProperties.getDefaultLanguageSystem();
+        this.langUser = appProperties.getDefaultLanguageUser();
     }
 
     // getFormatedTranslationSystem
-    public String getFormatSys(String messageKey, Object... args) {
+    public String getSys(String messageKey, Object... args) {
         return getFormattedTranslation(langSys, messageKey, args);
     }
 
     // getFormatedTranslationUser
-    public String getFormatUsr(String messageKey, Long userId, Object... args) {
-
+    public String getUsr(String userLanguageCode, String messageKey, Object... args) {
+/*
         Long userLanguageId = userRepository.findById(userId).get().getLanguageId();
 
         String codeLang = languageRepository.findById(userLanguageId).get().getCode();
+*/
+        //String languageCode = currentUserService.getCurrentUserLanguageCode();
 
-        String langUserId = (codeLang.isEmpty()) ? langUser : codeLang;
+        String langUserId = (userLanguageCode.isEmpty()) ? langUser : userLanguageCode;
 
         return getFormattedTranslation(langUserId, messageKey, args);
     }
@@ -67,9 +65,9 @@ public class TranslationManagerService {
             return translation;
         }
 
+        log.debug("Translation not found in cache, return default value");
+        if (appProperties.getLanguageTranslateWithDefault()) return messageKey;
         log.debug("Translation not found in cache, checking database");
-        if (appPrp.getLanguageTranslateWithDefault()) return messageKey;
-
         return translationRepository.findTranslatedTextByLanguageCodeAndMessageKey(languageCode, messageKey)
                 .orElse(messageKey);
     }

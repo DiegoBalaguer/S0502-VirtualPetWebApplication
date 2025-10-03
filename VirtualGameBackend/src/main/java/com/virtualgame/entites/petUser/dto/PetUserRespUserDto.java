@@ -51,6 +51,9 @@ public record PetUserRespUserDto(
         Integer age,
 
         @Schema(description = "Date when the pet death.", example = "2025-07-15")
-        LocalDateTime deathDate
+        LocalDateTime deathDate,
+
+        @Schema(description = "Reason for death petUser.", example = "PetUser death for Age")
+        String deathReason
 ) {
 }

@@ -41,16 +41,11 @@ public class UserControllerUser {
     @ApiResponse(responseCode = "200", description = "User updated successfully")
     @ApiResponse(responseCode = "404", description = "User not found")
     @PatchMapping("/update")
-    public ResponseEntity<UserUpdateUserDto> updateUserProfile(@RequestBody @Valid UserUpdateUserDto userUpdateUserDto) {
+    public ResponseEntity<UserRespUserDto> updateUserProfile(@RequestBody @Valid UserUpdateUserDto userUpdateUserDto) {
         Long userId = currentUserService.getCurrentUserId();
         UserUpdateAdminDto userUpdateAdminDto = userUpdateAdminDtoMapper.toDtoFromUpdateUserDto(userUpdateUserDto);
-        log.debug("#################################################");
-        log.debug("userId: {}", userId);
-        log.debug("userDto recibido: {}", userUpdateUserDto);
-        log.debug("userDto Admin: {}", userUpdateAdminDto);
-        log.debug("###################################################");
         return ResponseEntity.ok(
-                userUpdateUserDtoMapper.toDtoFromUpdateAdminDto(
+                userRespUserDtoMapper.toDtoFromUpdateAdminDto(
                         userServiceImpl.updateUserEntityById(userId, userId, userUpdateAdminDto)));
     }
 

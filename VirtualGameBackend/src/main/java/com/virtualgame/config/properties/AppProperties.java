@@ -2,6 +2,7 @@ package com.virtualgame.config.properties;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,21 @@ public class AppProperties {
     private String defaultLanguageSystem;
     private String defaultLanguageUser;
     private Boolean languageTranslateWithDefault;
+
+    // SECURITY
+
+    private String securityDefaultSecurityJwtPrivateKey;
+    private String securityDefaultSecurityJwtGeneratorUser;
+    private Long securityDefaultSecurityJwtExpiration;
+
+    // CORS
+
+    private String corsDefaultListAllowedOriginPatterns;
+    private String corsDefaultListAllowedHeaders;
+    private String corsDefaultListAllowedMethods;
+    private Boolean corsDefaultAllowCredentials;
+    private Long corsDefaultMaxAge;
+    private String corsDefaultRegisterCorsConfiguration;
 
     // USER
 
@@ -70,13 +86,18 @@ public class AppProperties {
     private Integer defaultPetHungryDangerReps;
 
     private Integer defaultPetActionAgeMin;
+    private Long defaultPetActionScape;
+    private Long defaultPetActionReturn;
 
     private Long defaultPetHabitatDomedCityId;
-    private Long defaultPetHabitatSanctuaryId;
     private Long defaultPetHabitatCarrouselId;
+    private Long defaultPetHabitatCreatePetUser;
+    private Long defaultPetHabitatReturnId;
+
+    private Long defaultPetHabitatSanctuaryId;
     private Long defaultPetHabitatCementerId;
     private Long defaultPetHabitatEscapeId;
-    private Long defaultPetHabitatCreatePetUser;
+
 
 
 

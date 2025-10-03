@@ -6,9 +6,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.security.user.auth.SecurityUser;
+import com.virtualgame.security.user.auth.dto.AuthCreateTokenDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -19,28 +21,21 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtils {
 
-    @Value("${security.jwt.key.private}")
-    private String privateKey;
+    private final AppProperties appProperties;
 
-    @Value("${security.jwt.expiration-ms:86400000}")
-    private long jwtExpiration;
-
-    @Value("${security.jwt.user.generator}")
-    private String userGenerator;
-
-
-    public String createToken(Authentication authentication, Long userId, String name) {
-        Algorithm algorithm = Algorithm.HMAC256(privateKey);
-        String username = authentication.getPrincipal().toString();
+    public String createToken(AuthCreateTokenDto tokenCreateDot) {
+        Algorithm algorithm = Algorithm.HMAC256(appProperties.getSecurityDefaultSecurityJwtPrivateKey());
+        //String username = tokenCreateDot.authentication().getPrincipal().toString();
 
         // authorities → lista de strings
-        List<String> roles = authentication.getAuthorities().stream()
+        List<String> roles = tokenCreateDot.authentication().getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        Object principal = authentication.getPrincipal();
+        Object principal = tokenCreateDot.authentication().getPrincipal();
         String email;
         if (principal instanceof SecurityUser su) {
             email = su.getEmail();
@@ -49,25 +44,26 @@ public class JwtUtils {
         }
 
         return JWT.create()
-                .withIssuer(userGenerator)
+                .withIssuer(appProperties.getSecurityDefaultSecurityJwtGeneratorUser())
                 .withSubject(email)
-                .withClaim("userId", userId)
-                .withClaim("name", name)
+                .withClaim("userId", tokenCreateDot.userId())
+                .withClaim("name", tokenCreateDot.userName())
+                .withClaim("languageCode", tokenCreateDot.userLanguage())
                 .withClaim("roles", roles)
                 .withJWTId(UUID.randomUUID().toString())
                 .withIssuedAt(new Date())
                 .withNotBefore(new Date(System.currentTimeMillis()))
-                .withExpiresAt(new Date(System.currentTimeMillis()  + jwtExpiration))
+                .withExpiresAt(new Date(System.currentTimeMillis()  + appProperties.getSecurityDefaultSecurityJwtExpiration()))
                 .sign(algorithm);
     }
 
     public DecodedJWT validateToken(String token) {
         try {
 
-            Algorithm algorithm = Algorithm.HMAC256(privateKey);
+            Algorithm algorithm = Algorithm.HMAC256(appProperties.getSecurityDefaultSecurityJwtPrivateKey());
 
             JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer(userGenerator)
+                    .withIssuer(appProperties.getSecurityDefaultSecurityJwtGeneratorUser())
                     .build();
 
             DecodedJWT decodedJWT = verifier.verify(token);
@@ -79,7 +75,7 @@ public class JwtUtils {
     }
 
     public String extractUsername(DecodedJWT decodedJWT) {
-        return decodedJWT.getSubject().toString();
+        return decodedJWT.getSubject();
     }
 
     public Claim getSpecificClaim(DecodedJWT decodedJWT, String claimName) {

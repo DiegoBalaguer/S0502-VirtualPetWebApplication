@@ -41,14 +41,14 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 String email = decodedJWT.getSubject();
                 Long userId = decodedJWT.getClaim("userId").asLong();
                 String name = decodedJWT.getClaim("name").asString();
+                String languageCode = decodedJWT.getClaim("languageCode").asString();
                 List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
 
                 var authorities = AuthorityUtils.createAuthorityList(
                         roles != null ? roles.toArray(new String[0]) : new String[]{}
                 );
 
-
-                SecurityUser securityUser = new SecurityUser(userId, email, name);
+                SecurityUser securityUser = new SecurityUser(userId, email, name, languageCode);
 
                 Authentication auth = new UsernamePasswordAuthenticationToken(securityUser, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(auth);

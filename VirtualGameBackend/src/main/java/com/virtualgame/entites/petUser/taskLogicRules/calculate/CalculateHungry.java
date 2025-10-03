@@ -1,9 +1,9 @@
-package com.virtualgame.entites.petUser.logicRules.calculate;
+package com.virtualgame.entites.petUser.taskLogicRules.calculate;
 
 import com.virtualgame.config.properties.AppProperties;
 import com.virtualgame.entites.petUser.PetUser;
-import com.virtualgame.entites.petUser.dto.PetUserRespAdminDto;
-import com.virtualgame.entites.petUser.mapper.PetUserRespAdminDtoMapper;
+import com.virtualgame.security.user.auth.CurrentUserService;
+import com.virtualgame.translation.TranslationManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,12 @@ import java.time.LocalDateTime;
 public class CalculateHungry {
 
     private final AppProperties appProperties;
-    private final PetUserRespAdminDtoMapper petUserRespAdminDtoMapper;
+    private final TranslationManagerService translate;
+    private final CurrentUserService currentUserService;
 
     public void valueHungry(PetUser petUserCalc, int valueHungry) {
-        log.debug("Calculating Hungry.");
-        //PetUser petUserCalc = petUserRespAdminDtoMapper.toEntity(petUserCalcDto);
+        log.debug(translate
+                .getSys("Calculating Hungry."));
 
         int hungryMin = appProperties.getDefaultPetHungryMin();
         int hungryMax = appProperties.getDefaultPetHungryMax();
@@ -29,7 +30,8 @@ public class CalculateHungry {
 
         if ((petHungry >= hungryMax && valueHungry >= 0) || (petHungry <= hungryMin && valueHungry < 0)) {
             petUserCalc.setHungryReps(petUserCalc.getHungryReps() + 1);
-            log.debug("Min or Max Hungry repetitions: " + petUserCalc.getHappyReps());
+            log.debug(translate
+                    .getSys("Min or Max Hungry repetitions: {0}", petUserCalc.getHappyReps()));
         } else {
             newHungry = Math.max(newHungry, hungryMin);
             newHungry = Math.min(newHungry, hungryMax);
@@ -37,9 +39,12 @@ public class CalculateHungry {
             petUserCalc.setHungryReps(0);
         }
         if (petUserCalc.getHungryReps() >= appProperties.getDefaultPetHungryDangerReps()) {
-            log.debug("PetUser death for getHungryReps: {}", petUserCalc.getHungryReps());
+            log.debug(translate
+                    .getSys("PetUser death for getHungryReps: {0}", petUserCalc.getHungryReps()));
             petUserCalc.setDeathDate(LocalDateTime.now());
+            petUserCalc.setDeathReason(translate.getUsr(
+                    currentUserService.getCurrentUserLanguageCode(),
+                    "PetUser death for getHungryReps: {0}", petUserCalc.getHungryReps()));
         }
-        //return petUserRespAdminDtoMapper.toDto(petUserCalc);
     }
 }

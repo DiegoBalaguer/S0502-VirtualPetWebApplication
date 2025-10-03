@@ -1,8 +1,10 @@
 package com.virtualgame.entites.petUser;
 
 import com.virtualgame.entites.petUser.dto.PetUserRespAdminDto;
+import com.virtualgame.entites.petUser.dto.PetUserRespTaskAdminDto;
 import com.virtualgame.security.user.auth.CurrentUserService;
 import com.virtualgame.entites.petUser.dto.PetUserCreateDto;
+import com.virtualgame.security.user.auth.dto.AuthSecurityUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -30,10 +32,10 @@ public class PetUserControllerAdmin {
             @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PostMapping("/create")
-    public ResponseEntity<PetUserRespAdminDto> create(
+    public ResponseEntity<PetUserRespTaskAdminDto> create(
             @RequestBody @Valid PetUserCreateDto createDto) {
 
-        PetUserRespAdminDto createdPet = petUserServiceImpl.createPetUser(createDto, currentUserService.getCurrentUserId());
+        PetUserRespTaskAdminDto createdPet = petUserServiceImpl.createPetUser(createDto, currentUserService.getCurrentUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPet);
     }
 
@@ -43,16 +45,16 @@ public class PetUserControllerAdmin {
             @ApiResponse(responseCode = "404", description = "Pet not found")
     })
     @GetMapping("/find/{id}")
-    public ResponseEntity<PetUserRespAdminDto> findPetById(@PathVariable Long id) {
-        PetUserRespAdminDto pet = petUserServiceImpl.findPetUserById(id);
+    public ResponseEntity<PetUserRespTaskAdminDto> findPetById(@PathVariable Long id) {
+        PetUserRespTaskAdminDto pet = petUserServiceImpl.findPetUserById(id);
         return ResponseEntity.ok(pet);
     }
 
     @Operation(summary = "Get all pets", description = "Retrieves all pets from the system")
     @ApiResponse(responseCode = "200", description = "List of pets retrieved")
     @GetMapping("/list")
-    public ResponseEntity<List<PetUserRespAdminDto>> findAllPets() {
-        List<PetUserRespAdminDto> pets = petUserServiceImpl.findAllPetsUser();
+    public ResponseEntity<List<PetUserRespTaskAdminDto>> findAllPets() {
+        List<PetUserRespTaskAdminDto> pets = petUserServiceImpl.findAllPetsUser();
         return ResponseEntity.ok(pets);
     }
 
@@ -63,11 +65,11 @@ public class PetUserControllerAdmin {
             @ApiResponse(responseCode = "404", description = "Pet not found")
     })
     @PutMapping("/update/{id}")
-    public ResponseEntity<PetUserRespAdminDto> updatePet(
+    public ResponseEntity<PetUserRespTaskAdminDto> updatePet(
             @PathVariable Long id,
             @RequestBody @Valid PetUserRespAdminDto fullDto) {
 
-        PetUserRespAdminDto updatedPet = petUserServiceImpl.updatePetUser(id, fullDto, currentUserService.getCurrentUserId());
+        PetUserRespTaskAdminDto updatedPet = petUserServiceImpl.updatePetUser(id, fullDto, currentUserService.getCurrentUserId());
         return ResponseEntity.ok(updatedPet);
     }
 
@@ -79,8 +81,8 @@ public class PetUserControllerAdmin {
     @PatchMapping("/delete-soft/{id}")
     public ResponseEntity<Void> softDeletePet(
             @PathVariable Long id) {
-
-        petUserServiceImpl.softDeletePetUserByUserId(id, currentUserService.getCurrentUserId());
+        AuthSecurityUserDto authSecurityUserDto = currentUserService.getCurrentUserDto();
+        petUserServiceImpl.softDeletePetUserByUserId(authSecurityUserDto, id);
         return ResponseEntity.noContent().build();
     }
 
@@ -98,10 +100,10 @@ public class PetUserControllerAdmin {
     @Operation(summary = "Search pets by type", description = "Searches pets by type ID")
     @ApiResponse(responseCode = "200", description = "List of matching pets")
     @GetMapping("/find-by-type")
-    public ResponseEntity<List<PetUserRespAdminDto>> findPetsByType(
+    public ResponseEntity<List<PetUserRespTaskAdminDto>> findPetsByType(
             @RequestParam Long typeId) {
 
-        List<PetUserRespAdminDto> pets = petUserServiceImpl.findPetsUserByType(typeId);
+        List<PetUserRespTaskAdminDto> pets = petUserServiceImpl.findPetsUserByType(typeId);
         return ResponseEntity.ok(pets);
     }
 }
